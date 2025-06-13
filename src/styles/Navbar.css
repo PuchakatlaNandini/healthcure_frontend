@@ -1,0 +1,20 @@
+.navbar-wrapper{
+     border-bottom: 1px solid blue;
+     padding-top: 10px;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 3%;
+    margin-right: 3%;
+    
+}
+
+.navbar li:hover{
+    text-decoration: underline;
+    color: blue;
+}
+
+
