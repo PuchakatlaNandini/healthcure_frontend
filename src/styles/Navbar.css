@@ -1,0 +1,46 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 40px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(226, 152, 152, 0.05);
+  margin-top:-300px ;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.brand-name {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.navbar-right {
+  display: flex;
+  gap: 15px;
+  /* margin-top: -500px;*/
+  margin-right: -150%; 
+}
+
+.nav-button {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.nav-button:hover {
+  background-color: #f0f0f0;
+}
