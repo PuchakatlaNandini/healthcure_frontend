@@ -3,7 +3,7 @@ import { Box, Typography, Button } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useNavigate } from 'react-router-dom';
 
-const ProfileUpload = () => {
+const ProfileUpload = ({ onCompleteSetup }) => {
   const [file, setFile] = useState(null);
   const navigate = useNavigate();
 
@@ -31,10 +31,12 @@ const ProfileUpload = () => {
   };
 
   const handleSubmit = () => {
-    
-    alert("Profile setup complete!");
-    navigate("/dashboard")
-    
+    if (onCompleteSetup) {
+      onCompleteSetup();
+    } else {
+      alert("Profile setup complete!");
+      navigate("/dashboard");
+    }
   };
 
   return (

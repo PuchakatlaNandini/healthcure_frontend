@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
     Box,
     Typography,
@@ -6,6 +6,7 @@ import {
     Grid,
     TextField,
     MenuItem,
+    Button,
     InputAdornment
 } from "@mui/material";
 import {
@@ -19,6 +20,12 @@ import {
 } from "@mui/icons-material";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ProfileUpload from "./profileUpload";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+
+
+
 
 const specializations = [
     "Cardiology",
@@ -29,7 +36,51 @@ const specializations = [
     "General Medicine"
 ];
 
+
+
 export default function DoctorProfile() {
+
+ const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    phone: "",
+    specialization: "",
+    experience: "",
+    fee: "",
+    degrees: "",
+    address: "",
+    from: "",
+    to: "",
+    bio: "",
+    image: ""
+  });
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleImageUpload = (imgUrl) => {
+    setFormData((prev) => ({ ...prev, image: imgUrl }));
+  };
+
+  const handleSubmit = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    console.log('Submitting profile form data:', formData); // Log form data before sending
+    const token = localStorage.getItem("token");
+    try {
+      await axios.post("http://localhost:5000/api/doctor/profile", formData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      alert("Profile submitted successfully!");
+      navigate("/dashboard");
+    } catch (error) {
+      alert(error?.response?.data?.message || "Error submitting profile");
+    }
+  };
+
     return (
         <Box sx={{ margin: 5, textAlign: "center", minHeight: "90vh" }}>
             {/* Header */}
@@ -68,6 +119,9 @@ export default function DoctorProfile() {
                             <TextField
                                 fullWidth
                                 label="Full Name *"
+                                name="name"
+                value={formData.name}
+                onChange={handleChange}
                                 defaultValue="Dr. John Smith"
                                 FilledInput={{
                                     startAdornment: (
@@ -81,7 +135,9 @@ export default function DoctorProfile() {
 
                         {/* Specialization */}
                         <Grid item xs={12} sm={6} size={6}>
-                            <TextField fullWidth select label="Specialization *" defaultValue="Cardiology" variant="outlined">
+                            <TextField fullWidth select label="Specialization *"  name="specialization"
+                value={formData.specialization}
+                onChange={handleChange} defaultValue="Cardiology" variant="outlined">
                                 {specializations.map((option) => (
                                     <MenuItem key={option} value={option}>
                                         {option}
@@ -95,6 +151,9 @@ export default function DoctorProfile() {
                             <TextField
                                 fullWidth
                                 label="Email"
+                                name="email"
+                value={formData.email}
+                onChange={handleChange}
                                 defaultValue="doctor@example.com"
                                 FilledInput={{
                                     startAdornment: (
@@ -111,6 +170,9 @@ export default function DoctorProfile() {
                             <TextField
                                 fullWidth
                                 label="Password"
+                                name="password"
+                value={formData.password}
+                onChange={handleChange}
                                 defaultValue="12334"
                                 FilledInput={{
                                     startAdornment: (
@@ -127,6 +189,9 @@ export default function DoctorProfile() {
                             <TextField
                                 fullWidth
                                 label="Phone Number"
+                                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
                                 defaultValue="+1 (555) 123-4567"
                                 FilledInput={{
                                     startAdornment: (
@@ -143,6 +208,9 @@ export default function DoctorProfile() {
                             <TextField
                                 fullWidth
                                 label="Years of Experience *"
+                                name="experience"
+                value={formData.experience}
+                onChange={handleChange}
                                 defaultValue="10"
                                 type="number"
                             />
@@ -153,6 +221,9 @@ export default function DoctorProfile() {
                             <TextField
                                 fullWidth
                                 label="Consultation Fee "
+                                name="fee"
+                value={formData.fee}
+                onChange={handleChange}
                                 defaultValue="100"
 
                                 FilledInput={{
@@ -170,6 +241,9 @@ export default function DoctorProfile() {
                             <TextField
                                 fullWidth
                                 label="Medical Degrees & Qualifications"
+                                name="degrees"
+                value={formData.degrees}
+                onChange={handleChange}
                                 defaultValue="MBBS, MD (Medicine), Fellowship in Cardiology"
                                 FilledInput={{
                                     startAdornment: (
@@ -186,6 +260,9 @@ export default function DoctorProfile() {
                             <TextField
                                 fullWidth
                                 label="Clinic/Hospital Address"
+                                name="address"
+                value={formData.address}
+                onChange={handleChange}
                                 defaultValue="123 Medical Center, New York, NY 10001"
                                 FilledInput={{
                                     startAdornment: (
@@ -210,6 +287,9 @@ export default function DoctorProfile() {
                                         <TextField
                                             fullWidth
                                             label="Available From"
+                                            name="from"
+                value={formData.from}
+                onChange={handleChange}
                                             defaultValue="09:00 AM"
                                             InputProps={{
                                                 startAdornment: (
@@ -225,6 +305,9 @@ export default function DoctorProfile() {
                                         <TextField
                                             fullWidth
                                             label="Available To"
+                                            name="to"
+                value={formData.to}
+                onChange={handleChange}
                                             defaultValue="10:00 PM"
                                             InputProps={{
                                                 startAdornment: (
@@ -250,6 +333,9 @@ export default function DoctorProfile() {
                                     required
                                     id="description"
                                     label="Description"
+                                    name="bio"
+                value={formData.bio}
+                onChange={handleChange}
                                     placeholder="Describe about yourself"
                                     multiline
                                     rows={3}
@@ -258,7 +344,7 @@ export default function DoctorProfile() {
                             </Grid>
                         </Grid>
                         <Grid item xs={12} size={12}> 
-                        <ProfileUpload/>
+                        <ProfileUpload onCompleteSetup={handleSubmit}/>
                         </Grid>
                     </Grid>
                 </Box>

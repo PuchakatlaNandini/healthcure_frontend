@@ -13,17 +13,15 @@ import {
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
+import axios from "../utils/axios";
 
-export default function AvailabilitySlotManager() {
+export default function AvailabilitySlotManager({ slots = [], setSlots }) {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [slots, setSlots] = useState([]);
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const handleAddSlot = () => {
-    
-    if (!startTime || !endTime) 
-        return ;
+    if (!startTime || !endTime) return;
 
     const newSlot = {
       id: Date.now(),
@@ -41,8 +39,19 @@ export default function AvailabilitySlotManager() {
   };
 
   const handleSaveSettings = () => {
-    
     navigate("/doctor/appointments/today");
+  };
+
+  const handleSaveTimeSlots = async () => {
+    try {
+      const formattedSlots = slots
+        .filter((slot) => slot.start && slot.end)
+        .map((slot) => `${slot.start}-${slot.end}`);
+      await axios.put("/doctor/availability", { timeSlots: formattedSlots });
+      alert("Time slots saved!");
+    } catch (err) {
+      alert("Error saving time slots");
+    }
   };
 
   return (
@@ -58,8 +67,7 @@ export default function AvailabilitySlotManager() {
             onChange={(e) => setStartTime(e.target.value)}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">
-                </InputAdornment>
+                <InputAdornment position="start"></InputAdornment>
               ),
             }}
           />
@@ -73,8 +81,7 @@ export default function AvailabilitySlotManager() {
             onChange={(e) => setEndTime(e.target.value)}
             InputProps={{
               startAdornment: (
-                <InputAdornment position="start">
-                 </InputAdornment>
+                <InputAdornment position="start"></InputAdornment>
               ),
             }}
           />
@@ -128,7 +135,15 @@ export default function AvailabilitySlotManager() {
       </Box>
 
       {/* Save Settings Button */}
-      <Box textAlign="left" sx={{ mt: 4 }}>
+      <Box textAlign="left" sx={{ mt: 2 }}>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={handleSaveTimeSlots}
+          sx={{ mr: 2 }}
+        >
+          Save Time Slots
+        </Button>
         <Button
           variant="contained"
           color="primary"
@@ -136,7 +151,7 @@ export default function AvailabilitySlotManager() {
         >
           Save Settings
         </Button>
-        </Box>
+      </Box>
     </Box>
   );
 }

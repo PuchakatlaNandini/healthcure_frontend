@@ -13,21 +13,25 @@ export default function DoctorLogin() {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/login", {
+      const response = await axios.post("http://localhost:5000/api/doctor/login", {
         email,
         password,
       });
 console.log("Login successful:", response.data);
-      const { token,  role} = response.data;
+      const { token,  role,isProfileComplete} = response.data;
       console.log(role)
        localStorage.setItem("token", token);
          localStorage.setItem("role", role);
 
-if (role === "doctor") {
-        navigate("/doctor/profile");
+ if (role === "doctor") {
+      if (isProfileComplete) {
+        navigate("/dashboard");
       } else {
-        navigate("/");
+        navigate("/doctor/profile");
       }
+    } else {
+      navigate("/");
+    }
 
     } catch (error) {
     
@@ -78,6 +82,10 @@ if (role === "doctor") {
       <Button variant="contained" onClick={handleLogin}>
         Login
       </Button>
+    </Grid>
+    {/* Register Button */}
+    <Grid item xs={12}>
+      <Button variant="outlined" onClick={() => navigate("/doctor/register")}>Register</Button>
     </Grid>
   </Grid>
 </Box></Box>

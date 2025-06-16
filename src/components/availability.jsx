@@ -1,15 +1,19 @@
-
+import React, { useState } from "react";
 import {
     Typography,
     Grid,
     TextField,
-    InputAdornment
+    InputAdornment,
+    Button,
+    Switch
 } from "@mui/material";
 import { AccessTimeFilled } from "@mui/icons-material";
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
 import AvailabilitySlotManager from "./availabilitySlots";
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import dayjs from 'dayjs';
+import axios from '../utils/axios';
 
 export default function Availability() {
 
@@ -73,6 +77,28 @@ export default function Availability() {
         },
     }));
 
+    const [selectedDates, setSelectedDates] = useState([]);
+    const [currentDate, setCurrentDate] = useState(null);
+    const [slots, setSlots] = useState([]);
+    const handleDateChange = (date) => {
+        if (!date) return;
+        const formatted = dayjs(date).format('YYYY-MM-DD');
+        if (!selectedDates.includes(formatted)) {
+            setSelectedDates([...selectedDates, formatted]);
+        }
+    };
+    const handleRemoveDate = (date) => {
+        setSelectedDates(selectedDates.filter(d => d !== date));
+    };
+    const handleSaveAvailability = async () => {
+        try {
+            // You may need to send doctorId or use auth token
+            await axios.put('/doctor/availability', { dates: selectedDates });
+            alert('Availability saved!');
+        } catch (err) {
+            alert('Error saving availability');
+        }
+    };
 
     return (
 
@@ -120,62 +146,37 @@ export default function Availability() {
                 </Grid>
             </Grid>
 
-            {/*working days */}
-            <Grid>
-                <Typography variant="h6" sx={{ mt: 3 }}>Working Days</Typography>
-                <Grid container spacing={2}>
-                    <Grid item xs={12} md={3} size={3} >
-                        <FormControlLabel
-                            control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
-                            label="Monday"
-                        />
+                                <Typography variant="h6" sx={{ mt: 3 }}>Set Available Dates</Typography>
+            <DateCalendar
+                value={currentDate}
+                onChange={(date) => {
+                    setCurrentDate(date);
+                    handleDateChange(date);
+                }}
+            />
+            <Grid container spacing={1} sx={{ mt: 1 }}>
+                {selectedDates.map(date => (
+                    <Grid item key={date}>
+                        <Button variant="outlined" color="primary" onClick={() => handleRemoveDate(date)}>
+                            {date} &times;
+                        </Button>
                     </Grid>
-                    <Grid item xs={12} md={3} size={3} >
-                        <FormControlLabel
-                            control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
-                            label="Tuesday"
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={3} size={3} >
-                        <FormControlLabel
-                            control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
-                            label="Wednesday"
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={3} size={3} >
-                        <FormControlLabel
-                            control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
-                            label="Thursday"
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={3} size={3}>
-                        <FormControlLabel
-                            control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
-                            label="Friday"
-                        />
-                    </Grid>
-                    <Grid item xs={12} md={3} size={3} >
-                        <FormControlLabel
-                            control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
-                            label="Saturday"
-                        /></Grid>
-                    <Grid item xs={12} md={3} size={3} >
-                        <FormControlLabel
-                            control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
-                            label="Sunday"
-                        />
-                    </Grid>
-                </Grid>
+                ))}
             </Grid>
+            <Button variant="contained" color="success" sx={{ mt: 2 }} onClick={handleSaveAvailability}>
+                Save Availability
+            </Button>
 
             <Grid>
                 <Typography variant="h6" sx={{ mt: 3 }}>Available Timeslots</Typography>
 
                 <Grid container spacing={2} sx={{ mt: 3 }}>
-                    <AvailabilitySlotManager />
+                    <AvailabilitySlotManager slots={slots} setSlots={setSlots} />
                 </Grid>
 
             </Grid>
+
+            
         </Grid>
     )
-} 
+}
