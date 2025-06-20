@@ -47,7 +47,7 @@ export default function AvailabilitySlotManager({ slots = [], setSlots }) {
       const formattedSlots = slots
         .filter((slot) => slot.start && slot.end)
         .map((slot) => `${slot.start}-${slot.end}`);
-      await axios.put("/doctor/availability", { timeSlots: formattedSlots });
+      await axios.put("/doctors/availability", { timeSlots: formattedSlots });
       alert("Time slots saved!");
     } catch (err) {
       alert("Error saving time slots");

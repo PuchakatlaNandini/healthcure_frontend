@@ -14,10 +14,11 @@ import PersonIcon from '@mui/icons-material/Person';
 
 export default function LandingPage() {
   return (
-    <Box >
+    <Box>
       <Navbar />
       <Box sx={{
-        width: '100vw', margin: 0, padding: 0,
+        width: '100%', 
+        margin: 0, padding: 0,
         backgroundColor: 'lightblue',
         textAlign: 'center',
         py: 25,

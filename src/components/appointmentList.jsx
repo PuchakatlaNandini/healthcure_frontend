@@ -1,32 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
   Paper,
- 
   Chip,
   Stack,
 } from "@mui/material";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
-import { useEffect ,useState} from "react";
-import axios from "axios";
+import axiosInstance from "../utils/axios";
 
-const AppointmentList = () => {
-   const [appointments, setAppointments] = useState([]);
+const AppointmentList = ({ appointments: propAppointments }) => {
+  const [appointments, setAppointments] = useState(propAppointments || []);
 
-useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const res = await axios.get("http://localhost:3000/api/doctor/appointments/today");
-        setAppointments(res.data);
-      } catch (err) {
-        console.error("Error fetching appointments", err);
-      }
-    };
-
-    fetchAppointments();
-  }, []);
+  useEffect(() => {
+    // Debug log to check received appointments
+    console.log('AppointmentList: received appointments prop:', propAppointments);
+    // Update local state when propAppointments changes
+    if (propAppointments) {
+      setAppointments(propAppointments);
+    }
+    // If appointments are not passed as props, fetch them for today
+    if (!propAppointments) {
+      const doctor = JSON.parse(localStorage.getItem("currentUser"));
+      if (!doctor || !doctor.user || !doctor.user.id) return;
+      const doctorId = doctor.user.id;
+      axiosInstance
+        .get(`/appointments/doctor/today/${doctorId}`)
+        .then((res) => {
+          setAppointments(res.data);
+          // Debug log for fetched appointments
+          console.log('AppointmentList: fetched appointments from API:', res.data);
+        })
+        .catch((err) => console.error("Error fetching today's appointments", err));
+    }
+  }, [propAppointments]);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -51,36 +59,19 @@ useEffect(() => {
           }}
         >
           <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
-            {appt.patientName}{" "}
-            <Typography component="span" variant="body2" color="text.secondary">
-              ({appt.age} years old)
-            </Typography>
+            {appt.userId?.name || "Unknown Patient"}
           </Typography>
           <Typography variant="body2" sx={{ mt: 0.5 }}>
-            {appt.reason}
+            {new Date(appt.scheduledAt).toLocaleString()} - {appt.consultationType}
           </Typography>
-
           <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 1 }}>
             <AccessTimeFilledIcon sx={{ fontSize: 18, color: "#555" }} />
-            <Typography variant="body2">{appt.time}</Typography>
+            <Typography variant="body2">{appt.status}</Typography>
             <Chip
-              label={appt.mode}
+              label={appt.consultationType}
               size="small"
-              color={appt.mode === "Online" ? "info" : "primary"}
+              color={appt.consultationType === "Online" ? "info" : "primary"}
               variant="outlined"
-            />
-            <Chip
-              label={appt.status}
-              size="small"
-              color={
-                appt.status === "Confirmed"
-                  ? "success"
-                  : appt.status === "Pending"
-                  ? "warning"
-                  : appt.status === "Declined"
-                  ? "error"
-                  : "default"
-              }
             />
           </Stack>
         </Paper>

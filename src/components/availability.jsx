@@ -93,7 +93,7 @@ export default function Availability() {
     const handleSaveAvailability = async () => {
         try {
             // You may need to send doctorId or use auth token
-            await axios.put('/doctor/availability', { dates: selectedDates });
+            await axios.put('/doctors/availability', { dates: selectedDates });
             alert('Availability saved!');
         } catch (err) {
             alert('Error saving availability');

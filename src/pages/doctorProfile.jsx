@@ -70,7 +70,7 @@ export default function DoctorProfile() {
     console.log('Submitting profile form data:', formData); // Log form data before sending
     const token = localStorage.getItem("token");
     try {
-      await axios.post("http://localhost:5000/api/doctor/profile", formData, {
+      await axios.post("http://localhost:5000/api/doctors/profile", formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -82,7 +82,7 @@ export default function DoctorProfile() {
   };
 
     return (
-        <Box sx={{ margin: 5, textAlign: "center", minHeight: "90vh" }}>
+        <Box sx={{ margin: { xs: 1, sm: 3, md: 5 }, textAlign: "center", minHeight: "90vh" }}>
             {/* Header */}
             <Typography variant="h5" fontWeight="bold" gutterBottom>
                 Complete Your Doctor Profile
@@ -95,13 +95,15 @@ export default function DoctorProfile() {
             <Paper
                 elevation={3}
                 sx={{
-                    maxWidth: 600,
+                    maxWidth: { xs: '100%', sm: 500, md: 600 },
                     mx: "auto",
-                    p: 4,
-                    mt: 4,
+                    p: { xs: 2, sm: 3, md: 4 },
+                    mt: { xs: 2, sm: 3, md: 4 },
                     borderRadius: 3,
                     bgcolor: "#f9fdfd",
-                    textAlign: "left"
+                    textAlign: "left",
+                    width: '100%',
+                    overflowX: 'hidden', // Prevent horizontal scroll
                 }}
             >
                 <Typography variant="h6" fontWeight="bold" gutterBottom>
@@ -112,32 +114,40 @@ export default function DoctorProfile() {
                     Please provide accurate information to build trust with patients
                 </Typography>
 
-                <Box component="form" noValidate sx={{ mt: 3 }}>
-                    <Grid container spacing={6}>
+                <Box component="form" noValidate sx={{ mt: 3, width: '100%' }}>
+                    <Grid container spacing={2}>
                         {/* Full Name */}
                         <Grid item xs={12} sm={6} size={6}>
                             <TextField
                                 fullWidth
                                 label="Full Name *"
                                 name="name"
-                value={formData.name}
-                onChange={handleChange}
+                                value={formData.name}
+                                onChange={handleChange}
                                 defaultValue="Dr. John Smith"
-                                FilledInput={{
+                                InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
                                             <Person />
                                         </InputAdornment>
                                     )
                                 }}
+                                sx={{ fontSize: { xs: 12, sm: 14 } }}
                             />
                         </Grid>
-
                         {/* Specialization */}
                         <Grid item xs={12} sm={6} size={6}>
-                            <TextField fullWidth select label="Specialization *"  name="specialization"
-                value={formData.specialization}
-                onChange={handleChange} defaultValue="Cardiology" variant="outlined">
+                            <TextField
+                                fullWidth
+                                select
+                                label="Specialization *"
+                                name="specialization"
+                                value={formData.specialization}
+                                onChange={handleChange}
+                                defaultValue="Cardiology"
+                                variant="outlined"
+                                sx={{ fontSize: { xs: 12, sm: 14 } }}
+                            >
                                 {specializations.map((option) => (
                                     <MenuItem key={option} value={option}>
                                         {option}
@@ -145,151 +155,147 @@ export default function DoctorProfile() {
                                 ))}
                             </TextField>
                         </Grid>
-
                         {/* Email */}
                         <Grid item xs={12} sm={6} size={6}>
                             <TextField
                                 fullWidth
                                 label="Email"
                                 name="email"
-                value={formData.email}
-                onChange={handleChange}
+                                value={formData.email}
+                                onChange={handleChange}
                                 defaultValue="doctor@example.com"
-                                FilledInput={{
+                                InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
                                             <Email />
                                         </InputAdornment>
                                     )
                                 }}
+                                sx={{ fontSize: { xs: 12, sm: 14 } }}
                             />
                         </Grid>
-
-                             {/* password */}
+                        {/* Password */}
                         <Grid item xs={12} sm={6} size={6}>
                             <TextField
                                 fullWidth
                                 label="Password"
                                 name="password"
-                value={formData.password}
-                onChange={handleChange}
+                                value={formData.password}
+                                onChange={handleChange}
                                 defaultValue="12334"
-                                FilledInput={{
+                                InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
                                             <Password />
                                         </InputAdornment>
                                     )
                                 }}
+                                sx={{ fontSize: { xs: 12, sm: 14 } }}
                             />
                         </Grid>
-
                         {/* Phone Number */}
                         <Grid item xs={12} sm={6} size={6}>
                             <TextField
                                 fullWidth
                                 label="Phone Number"
                                 name="phone"
-                value={formData.phone}
-                onChange={handleChange}
+                                value={formData.phone}
+                                onChange={handleChange}
                                 defaultValue="+1 (555) 123-4567"
-                                FilledInput={{
+                                InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
                                             <Phone />
                                         </InputAdornment>
                                     )
                                 }}
+                                sx={{ fontSize: { xs: 12, sm: 14 } }}
                             />
                         </Grid>
-
                         {/* Years of Experience */}
                         <Grid item xs={12} sm={6} size={6}>
                             <TextField
                                 fullWidth
                                 label="Years of Experience *"
                                 name="experience"
-                value={formData.experience}
-                onChange={handleChange}
+                                value={formData.experience}
+                                onChange={handleChange}
                                 defaultValue="10"
                                 type="number"
+                                sx={{ fontSize: { xs: 12, sm: 14 } }}
                             />
                         </Grid>
-
                         {/* Consultation Fee */}
                         <Grid item xs={12} sm={6} size={6}>
                             <TextField
                                 fullWidth
                                 label="Consultation Fee "
                                 name="fee"
-                value={formData.fee}
-                onChange={handleChange}
+                                value={formData.fee}
+                                onChange={handleChange}
                                 defaultValue="100"
-
-                                FilledInput={{
+                                InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
                                             <MonetizationOn />
                                         </InputAdornment>
                                     )
                                 }}
+                                sx={{ fontSize: { xs: 12, sm: 14 } }}
                             />
                         </Grid>
-
                         {/* Medical Degrees */}
                         <Grid item xs={12} sm={6} size={12}>
                             <TextField
                                 fullWidth
                                 label="Medical Degrees & Qualifications"
                                 name="degrees"
-                value={formData.degrees}
-                onChange={handleChange}
+                                value={formData.degrees}
+                                onChange={handleChange}
                                 defaultValue="MBBS, MD (Medicine), Fellowship in Cardiology"
-                                FilledInput={{
+                                InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
                                             <LocalHospital />
                                         </InputAdornment>
                                     )
                                 }}
+                                sx={{ fontSize: { xs: 12, sm: 14 } }}
                             />
                         </Grid>
-
                         {/* Clinic Address */}
                         <Grid item xs={12} sm={6} size={12}>
                             <TextField
                                 fullWidth
                                 label="Clinic/Hospital Address"
                                 name="address"
-                value={formData.address}
-                onChange={handleChange}
+                                value={formData.address}
+                                onChange={handleChange}
                                 defaultValue="123 Medical Center, New York, NY 10001"
-                                FilledInput={{
+                                InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
                                             <Business />
                                         </InputAdornment>
                                     )
                                 }}
+                                sx={{ fontSize: { xs: 12, sm: 14 } }}
                             />
                         </Grid>
-
                         {/* Working Hours Section */}
                         <Grid item xs={12}>
                             <Typography variant="h6" gutterBottom>
                                 Working Hours
                             </Typography>
-
-
-                            <Grid item xs={12} mt={2} >
-                                <Grid container spacing={3}>
+                            <Grid item xs={12} mt={2}>
+                                <Grid container spacing={2}>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
                                             fullWidth
                                             label="Available From"
                                             name="from"
-                value={formData.from}
-                onChange={handleChange}
+                                            value={formData.from}
+                                            onChange={handleChange}
                                             defaultValue="09:00 AM"
                                             InputProps={{
                                                 startAdornment: (
@@ -298,16 +304,16 @@ export default function DoctorProfile() {
                                                     </InputAdornment>
                                                 )
                                             }}
+                                            sx={{ fontSize: { xs: 12, sm: 14 } }}
                                         />
                                     </Grid>
-
-                                    <Grid item xs={12} sm={6} >
+                                    <Grid item xs={12} sm={6}>
                                         <TextField
                                             fullWidth
                                             label="Available To"
                                             name="to"
-                value={formData.to}
-                onChange={handleChange}
+                                            value={formData.to}
+                                            onChange={handleChange}
                                             defaultValue="10:00 PM"
                                             InputProps={{
                                                 startAdornment: (
@@ -316,35 +322,36 @@ export default function DoctorProfile() {
                                                     </InputAdornment>
                                                 )
                                             }}
+                                            sx={{ fontSize: { xs: 12, sm: 14 } }}
                                         />
                                     </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
-
                         {/* Description Section */}
-                        <Grid item xs={12} size={4}>
+                        <Grid item xs={12} size={12}>
                             <Typography variant="h6" gutterBottom>
                                 Bio
                             </Typography>
-                            <Grid item xs={12} size={12} width={'40vw'}>
+                            <Grid item xs={12}>
                                 <TextField
                                     fullWidth
                                     required
                                     id="description"
                                     label="Description"
                                     name="bio"
-                value={formData.bio}
-                onChange={handleChange}
+                                    value={formData.bio}
+                                    onChange={handleChange}
                                     placeholder="Describe about yourself"
                                     multiline
                                     rows={3}
                                     variant="outlined"
+                                    sx={{ fontSize: { xs: 12, sm: 14 } }}
                                 />
                             </Grid>
                         </Grid>
-                        <Grid item xs={12} size={12}> 
-                        <ProfileUpload onCompleteSetup={handleSubmit}/>
+                        <Grid item xs={12} size={12}>
+                            <ProfileUpload onCompleteSetup={handleSubmit}/>
                         </Grid>
                     </Grid>
                 </Box>

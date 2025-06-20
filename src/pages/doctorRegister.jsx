@@ -18,7 +18,7 @@ export default function DoctorRegister() {
 
   const handleRegister = async () => {
     try {
-      await axios.post("http://localhost:5000/api/auth/register", form);
+      await axios.post("http://localhost:5000/api/doctors/register", form);
       alert("Registration successful! Please login.");
       navigate("/doctor-login");
     } catch (error) {
@@ -34,7 +34,8 @@ export default function DoctorRegister() {
       minHeight: "100vh",
       backgroundColor: "#f0f4f8",
     }}>
-      <Box sx={{ p: 4, textAlign: "center", width: '40vw', border: "1px solid #ccc", borderRadius: 2, boxShadow: 3, backgroundColor: "#fff" }}>
+      <Box sx={{ p: 4, textAlign: "center", width: '40vw', border: "1px solid #ccc", borderRadius: 2, boxShadow: 3, backgroundColor: "#fff", position: 'relative' }}>
+        <span className="close-button" onClick={() => navigate('/')} style={{cursor: 'pointer', position: 'absolute', top: 10, right: 20, fontSize: 28}}>&times;</span>
         <Typography variant="h5" mb={3}>Doctor Registration</Typography>
         <Grid container direction="column" alignItems="center" spacing={2}>
           {Object.keys(form).map((key) => (
