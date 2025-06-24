@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import AppointmentList from "../components/appointmentList";
 import DoctorProfile from '../pages/doctorProfile';
 import Availability from "../components/availability";
@@ -15,7 +15,7 @@ export default function DoctorDashboard() {
 
   useEffect(() => {
     const fetchAppointments = async () => {
-      // Debug log for doctorId in localStorage
+    
       const doctorIdLS = localStorage.getItem("doctorId");
       const doctorIdAlt = localStorage.getItem("doctor_id");
       console.log('DoctorDashboard: doctorId from localStorage =', doctorIdLS, 'doctor_id =', doctorIdAlt);
@@ -29,7 +29,7 @@ export default function DoctorDashboard() {
       try {
         const res = await axiosInstance.get(`/appointments/doctor/today/${doctorId}`);
         console.log('DoctorDashboard: fetched appointments from API:', res.data);
-        setAppointments(res.data); 
+        setAppointments(res.data);
         const profileRes = await axiosInstance.get(`/api/doctors/${doctorId}`);
         const name = profileRes.data?.name;
         if (name) {
@@ -49,10 +49,10 @@ export default function DoctorDashboard() {
     <Box sx={{
       minHeight: '100vh',
       background: '#f8f9fa',
-      px: 0, 
+      px: 0,
       pt: { xs: 1, sm: 2, md: 4 },
-      width: '100vw', 
-      overflowX: 'hidden', 
+      width: '100vw',
+      overflowX: 'hidden',
     }}>
       <DoctorNavbar />
       <Box
@@ -66,9 +66,9 @@ export default function DoctorDashboard() {
           width: '100%',
           minHeight: 300,
           overflowX: 'auto',
-          px:0,
-          mr:3,
-          ml:3
+          px: 0,
+          mr: 3,
+          ml: 3
         }}
       >
         {/* Tab Buttons with spacing */}
@@ -99,10 +99,10 @@ export default function DoctorDashboard() {
         </Stack>
 
         {tab === "appointments" && <AppointmentList appointments={appointments} />}
-{tab === "profile" && <DoctorProfile />}
-{tab === "availability" && (
-  <Availability onSaveSettings={() => setTab("appointments")} />
-)}
+        {tab === "profile" && <DoctorProfile />}
+        {tab === "availability" && (
+          <Availability onSaveSettings={() => setTab("appointments")} />
+        )}
       </Box>
     </Box>
   );

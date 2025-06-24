@@ -14,9 +14,7 @@ const AppointmentList = ({ appointments: propAppointments }) => {
   const [appointments, setAppointments] = useState(propAppointments || []);
 
   useEffect(() => {
-    // Debug log to check received appointments
     console.log('AppointmentList: received appointments prop:', propAppointments);
-    // Update local state when propAppointments changes
     if (propAppointments) {
       setAppointments(propAppointments);
     }
@@ -29,7 +27,6 @@ const AppointmentList = ({ appointments: propAppointments }) => {
         .get(`/appointments/doctor/today/${doctorId}`)
         .then((res) => {
           setAppointments(res.data);
-          // Debug log for fetched appointments
           console.log('AppointmentList: fetched appointments from API:', res.data);
         })
         .catch((err) => console.error("Error fetching today's appointments", err));

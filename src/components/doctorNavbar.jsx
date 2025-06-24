@@ -9,8 +9,7 @@ import { useNavigate } from "react-router-dom";
 export default function DoctorNavbar() {
   const navigate = useNavigate();
   const doctorName = localStorage.getItem("doctorName") || "Doctor";
-  // Debug log to check what is in localStorage
-  // console.log('DoctorNavbar: doctorName from localStorage =', doctorName);
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
@@ -32,7 +31,7 @@ export default function DoctorNavbar() {
             variant="outlined"
             startIcon={<LogoutIcon />}
             onClick={handleLogout}
-            sx={{ textTransform: 'none', fontWeight: 'bold', whiteSpace: 'nowrap', fontSize: { xs: 10, sm: 14 }, px: 2 ,mr:3}}
+            sx={{ textTransform: 'none', fontWeight: 'bold', whiteSpace: 'nowrap', fontSize: { xs: 10, sm: 14 }, px: 2, mr: 3 }}
           >
             Logout
           </Button>

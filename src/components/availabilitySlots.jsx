@@ -15,7 +15,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 
-export default function AvailabilitySlotManager({ slots = [], setSlots,onSaveSettings }) {
+export default function AvailabilitySlotManager({ slots = [], setSlots, onSaveSettings }) {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const navigate = useNavigate();
@@ -38,10 +38,10 @@ export default function AvailabilitySlotManager({ slots = [], setSlots,onSaveSet
     setSlots(slots.filter((slot) => slot.id !== id));
   };
 
- const handleSaveSettings = () => {
-  console.log('Save settings clicked');
-  if (onSaveSettings) onSaveSettings();
-};
+  const handleSaveSettings = () => {
+    console.log('Save settings clicked');
+    if (onSaveSettings) onSaveSettings();
+  };
 
   const handleSaveTimeSlots = async () => {
     try {

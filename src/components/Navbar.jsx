@@ -3,13 +3,13 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import '../styles/navbar.css'; 
+import '../styles/navbar.css';
 import { useNavigate } from 'react-router-dom';
 
- 
+
 
 const Navbar = () => {
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -19,7 +19,7 @@ const navigate = useNavigate();
             <img src="/images/image.png" alt="Healthcure" style={{ width: 250, height: 48 }} />
           </Box>
           <Box sx={{ flexGrow: 1 }} />
-          <Button color="primary" variant="outlined" sx={{ mr: 1, minWidth: 90 }} onClick={() => navigate("/patient/login") }>
+          <Button color="primary" variant="outlined" sx={{ mr: 1, minWidth: 90 }} onClick={() => navigate("/patient/login")}>
             Patient Login
           </Button>
           <Button color="primary" variant="contained" sx={{ minWidth: 90 }} onClick={() => navigate("/doctor-login")}>
@@ -27,7 +27,7 @@ const navigate = useNavigate();
           </Button>
         </Toolbar>
       </AppBar>
-    
+
     </>
   );
 };

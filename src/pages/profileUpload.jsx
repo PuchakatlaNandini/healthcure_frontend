@@ -43,7 +43,7 @@ const ProfileUpload = ({ onCompleteSetup, onImageSelect }) => {
 
   return (
     <Box sx={{ maxWidth: 600, p: 4, boxShadow: 3, borderRadius: 2 }}>
-      <Typography variant="subtitle1" sx={{mb: 0}} fontWeight="bold" >
+      <Typography variant="subtitle1" sx={{ mb: 0 }} fontWeight="bold" >
         Profile Picture
       </Typography>
 
@@ -95,7 +95,7 @@ const ProfileUpload = ({ onCompleteSetup, onImageSelect }) => {
 
         {/* Preview Area */}
         {preview && (
-          <Box sx={{ width: 200 ,ml: 10}}>
+          <Box sx={{ width: 200, ml: 10 }}>
             <Typography variant="caption" color="text.primary" mb={1} noWrap>
               Selected: {file?.name}
             </Typography>

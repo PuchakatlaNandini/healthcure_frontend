@@ -132,7 +132,7 @@ export default function DoctorRegister() {
               variant="contained"
               onClick={handleRegister}
               fullWidth
-              // disabled={!form.email || !form.password}
+            // disabled={!form.email || !form.password}
             >
               Register
             </Button>

@@ -95,7 +95,7 @@ export default function DoctorLogin({ onClose }) {
         </Typography>
         <form onSubmit={handleLogin}>
           <Grid container direction="column" alignItems="center" spacing={2} >
-            <Grid item xs={12}  size={8}>
+            <Grid item xs={12} size={8}>
               <TextField
                 label="Email"
                 fullWidth
@@ -113,14 +113,14 @@ export default function DoctorLogin({ onClose }) {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 InputProps={{
-    endAdornment: (
-      <InputAdornment position="end">
-        <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-          {showPassword ? <VisibilityOff /> : <Visibility />}
-        </IconButton>
-      </InputAdornment>
-    )
-  }}
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
               />
             </Grid>
             <Grid item xs={12} size={8}>

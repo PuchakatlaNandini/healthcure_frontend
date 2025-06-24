@@ -14,17 +14,6 @@ import { TextField } from "@mui/material";
 import dayjs from "dayjs";
 
 
-// const timeSlots = [
-//   "09:00 AM", "09:15 AM", "09:30 AM", "09:45 AM",
-//   "10:00 AM", "10:15 AM", "10:30 AM", "10:45 AM",
-//   "11:00 AM", "11:15 AM", "11:30 AM", "11:45 AM",
-//   "12:00 PM", "12:15 PM", "12:30 PM", "12:45 PM",
-//   "01:00 PM", "01:15 PM", "01:30 PM", "01:45 PM",
-//   "02:00 PM", "02:15 PM", "02:30 PM", "02:45 PM",
-//   "03:00 PM", "03:15 PM", "03:30 PM", "03:45 PM",
-//   "04:00 PM", "04:15 PM", "04:30 PM", "04:45 PM",
-// ];
-
 const BookAppointment = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -64,7 +53,7 @@ const BookAppointment = () => {
   }, [doctor, user, navigate]);
 
 
-  // 🔽 Fetch availability on load
+  //  Fetch availability on load
   useEffect(() => {
     if (!doctor?._id) return;
     axios.get(`http://localhost:5000/api/doctors/availability/${doctor._id}`)
@@ -75,9 +64,9 @@ const BookAppointment = () => {
       .catch(err => console.error("Error fetching availability:", err));
   }, [doctor]);
 
-    
 
-  // 🔽 Filter slots by selected date
+
+  //  Filter slots by selected date
   useEffect(() => {
     const formatted = selectedDate ? dayjs(selectedDate).format("YYYY-MM-DD") : "";
     if (availability.includes(formatted)) {
@@ -89,68 +78,68 @@ const BookAppointment = () => {
 
 
 
-const handleBookingConfirm = async () => {
-  console.log("✅ Confirm Booking clicked");
+  const handleBookingConfirm = async () => {
+    console.log("Confirm Booking clicked");
 
-  if (!user || !doctor || !selectedDate || !selectedSlot) {
-    alert("Please fill all fields.");
-    return;
-  }
+    if (!user || !doctor || !selectedDate || !selectedSlot) {
+      alert("Please fill all fields.");
+      return;
+    }
 
-  const userId = user.id || user._id;
-  const doctorId = doctor._id || doctor.id;
+    const userId = user.id || user._id;
+    const doctorId = doctor._id || doctor.id;
 
-  if (!userId || !doctorId) {
-    alert("User or Doctor ID missing.");
-    return;
-  }
+    if (!userId || !doctorId) {
+      alert("User or Doctor ID missing.");
+      return;
+    }
 
-  // ✅ Format selectedDate from Dayjs to YYYY-MM-DD
-  const dateStr = dayjs(selectedDate).format("YYYY-MM-DD");
-  const timeStr = selectedSlot.split("-")[0].trim(); // ✅ use only the start time
+    //  Format selectedDate from Dayjs to YYYY-MM-DD
+    const dateStr = dayjs(selectedDate).format("YYYY-MM-DD");
+    const timeStr = selectedSlot.split("-")[0].trim(); 
 
-  console.log("📅 Selected date:", dateStr);
-  console.log("⏰ Selected time:", timeStr);
-
-
-  // ✅ Combine and parse using Dayjs
- const scheduledAtDayjs = dayjs(`${dateStr} ${timeStr}`, "YYYY-MM-DD HH:mm");
+    console.log(" Selected date:", dateStr);
+    console.log("Selected time:", timeStr);
 
 
-  if (!scheduledAtDayjs.isValid()) {
-    alert("Invalid date/time combination");
-    return;
-  }
+    //  Combine and parse using Dayjs
+    const scheduledAtDayjs = dayjs(`${dateStr} ${timeStr}`, "YYYY-MM-DD HH:mm");
 
-  const scheduledAt = scheduledAtDayjs.toISOString();
 
-  console.log("📅 Final scheduledAt:", scheduledAt);
+    if (!scheduledAtDayjs.isValid()) {
+      alert("Invalid date/time combination");
+      return;
+    }
 
-  const payload = {
-    userId,
-    doctorId,
-    scheduledAt,
-    consultationType,
-    status: "pending",
+    const scheduledAt = scheduledAtDayjs.toISOString();
+
+    console.log("Final scheduledAt:", scheduledAt);
+
+    const payload = {
+      userId,
+      doctorId,
+      scheduledAt,
+      consultationType,
+      status: "pending",
+    };
+
+    try {
+      setLoading(true);
+      const res = await axios.post("http://localhost:5000/api/appointments/book", payload);
+      console.log(" Appointment booked:", res.data);
+      setSuccess(true);
+      alert("Appointment booked successfully!");
+      setLoading(false);
+      navigate("/patient/dashboard", { state: { showAppointments: true } });
+    } catch (error) {
+      setLoading(false);
+      console.error(" Booking error:", error);
+      alert(
+        error.response?.data?.message ||
+        "Failed to book appointment. Please try again."
+      );
+    }
   };
-
-  try {
-    setLoading(true);
-    const res = await axios.post("http://localhost:5000/api/appointments/book", payload);
-    console.log("✅ Appointment booked:", res.data);
-    setSuccess(true);
-    alert("Appointment booked successfully!");
-    setLoading(false);
-    navigate("/patient/dashboard", { state: { showAppointments: true } });
-  } catch (error) {
-    setLoading(false);
-    console.error("❌ Booking error:", error);
-    alert(
-      error.response?.data?.message ||
-      "Failed to book appointment. Please try again."
-    );
-  }
-};
 
 
 
@@ -160,11 +149,11 @@ const handleBookingConfirm = async () => {
       <div className="appointment-content">
         {/* Doctor Profile */}
         <div className="doctor-profile">
-        <img
-  src={doctor?.image || "https://via.placeholder.com/150"}
-  alt="Doctor"
-  className="doctor-image"
-/>
+          <img
+            src={doctor?.image || "https://via.placeholder.com/150"}
+            alt="Doctor"
+            className="doctor-image"
+          />
 
 
           <h3 className="doctor-name">Dr. {doctor?.name}</h3>
@@ -193,10 +182,6 @@ const handleBookingConfirm = async () => {
           <h3 className="booking-title">Book Your Appointment</h3>
           <p className="booking-subtitle">Choose date, time and consultation type</p>
 
-          {/* <div className="user-info-box">
-            <p><strong>Booking for:</strong> {user?.name} ({user?.email})</p>
-          </div> */}
-
           {/* Type Selection */}
           <div className="consultation-type">
             {["In-Person", "Online"].map((type) => (
@@ -205,7 +190,7 @@ const handleBookingConfirm = async () => {
                 className={`option ${consultationType === type ? "selected" : ""}`}
                 onClick={() => {
                   setConsultationType(type);
-                  setSelectedSlot(""); // reset slot
+                  setSelectedSlot(""); 
                 }}
               >
                 {type === "In-Person" ? (
@@ -224,14 +209,14 @@ const handleBookingConfirm = async () => {
             <div className="calendar-section">
               {/* <label>Select Date:</label> */}
               <DatePicker
-  label="Select Date"
-  value={selectedDate}
-  onChange={(newValue) => {
-    setSelectedDate(newValue); // Keep as Dayjs
-    setSelectedSlot(""); // Reset slot
-  }}
-  renderInput={(params) => <TextField fullWidth {...params} />}
-/>
+                label="Select Date"
+                value={selectedDate}
+                onChange={(newValue) => {
+                  setSelectedDate(newValue); 
+                  setSelectedSlot(""); 
+                }}
+                renderInput={(params) => <TextField fullWidth {...params} />}
+              />
 
 
             </div>
@@ -239,27 +224,27 @@ const handleBookingConfirm = async () => {
 
           {/* Time Slot Selection */}
           {selectedDate && availableSlots.length > 0 && (
-  <div className="time-slots">
-    <label>Select Time Slot:</label>
-    <div className="slot-buttons">
-      {availableSlots.map((slot) => (
-        <button
-          key={slot}
-          className={`slot-button ${selectedSlot === slot ? "selected" : ""}`}
-          onClick={() => setSelectedSlot(slot)}
-        >
-          {slot}
-        </button>
-      ))}
-    </div>
-  </div>
-)}
+            <div className="time-slots">
+              <label>Select Time Slot:</label>
+              <div className="slot-buttons">
+                {availableSlots.map((slot) => (
+                  <button
+                    key={slot}
+                    className={`slot-button ${selectedSlot === slot ? "selected" : ""}`}
+                    onClick={() => setSelectedSlot(slot)}
+                  >
+                    {slot}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
-{selectedDate && availableSlots.length === 0 && (
-  <p style={{ marginTop: "1rem", color: "red" }}>
-    No available slots for selected date.
-  </p>
-)}
+          {selectedDate && availableSlots.length === 0 && (
+            <p style={{ marginTop: "1rem", color: "red" }}>
+              No available slots for selected date.
+            </p>
+          )}
 
 
           {/* Confirm Button */}

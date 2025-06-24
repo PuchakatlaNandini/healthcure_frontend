@@ -88,7 +88,7 @@ const PatientLogin = ({ onClose }) => {
 
         <form onSubmit={handleLogin}>
           <Grid container spacing={2} direction="column" alignItems={'center'}>
-            <Grid item xs={12} size={8}> 
+            <Grid item xs={12} size={8}>
               <TextField
                 label="Email"
                 name="email"

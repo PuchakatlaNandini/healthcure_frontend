@@ -17,7 +17,7 @@ import axios from '../utils/axios';
 
 export default function Availability({ onSaveSettings }) {
 
-    
+
     const [selectedDates, setSelectedDates] = useState([]);
     const [currentDate, setCurrentDate] = useState(null);
     const [slots, setSlots] = useState([]);
@@ -33,7 +33,7 @@ export default function Availability({ onSaveSettings }) {
     };
     const handleSaveAvailability = async () => {
         try {
-            
+
             await axios.put('/doctors/availability', { dates: selectedDates });
             alert('Availability saved!');
         } catch (err) {
@@ -87,7 +87,7 @@ export default function Availability({ onSaveSettings }) {
                 </Grid>
             </Grid>
 
-                                <Typography variant="h6" sx={{ mt: 3 }}>Set Available Dates</Typography>
+            <Typography variant="h6" sx={{ mt: 3 }}>Set Available Dates</Typography>
             <DateCalendar
                 value={currentDate}
                 onChange={(date) => {
@@ -112,12 +112,12 @@ export default function Availability({ onSaveSettings }) {
                 <Typography variant="h6" sx={{ mt: 3 }}>Available Timeslots</Typography>
 
                 <Grid item xs={12}>
-  <AvailabilitySlotManager slots={slots} setSlots={setSlots}  onSaveSettings={onSaveSettings} />
-</Grid>
+                    <AvailabilitySlotManager slots={slots} setSlots={setSlots} onSaveSettings={onSaveSettings} />
+                </Grid>
 
             </Grid>
 
-            
+
         </Grid>
     )
 }
