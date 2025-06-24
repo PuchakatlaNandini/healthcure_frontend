@@ -10,7 +10,7 @@ export default function DoctorNavbar() {
   const navigate = useNavigate();
   const doctorName = localStorage.getItem("doctorName") || "Doctor";
   // Debug log to check what is in localStorage
-  console.log('DoctorNavbar: doctorName from localStorage =', doctorName);
+  // console.log('DoctorNavbar: doctorName from localStorage =', doctorName);
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');

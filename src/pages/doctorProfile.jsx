@@ -23,10 +23,6 @@ import ProfileUpload from "./profileUpload";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-
-
-
-
 const specializations = [
     "Cardiology",
     "Dermatology",
@@ -36,50 +32,77 @@ const specializations = [
     "General Medicine"
 ];
 
-
-
+const consultationFees = [
+    "50",
+    "100",
+    "150",
+    "200",
+    "250",
+    "300",
+    "350",
+    "400",
+]
 export default function DoctorProfile() {
 
- const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    phone: "",
-    specialization: "",
-    experience: "",
-    fee: "",
-    degrees: "",
-    address: "",
-    from: "",
-    to: "",
-    bio: "",
-    image: ""
-  });
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        password: "",
+        phone: "",
+        specialization: "",
+        experience: "",
+        fee: "",
+        degrees: "",
+        address: "",
+        from: "",
+        to: "",
+        bio: "",
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+    });
 
-  const handleImageUpload = (imgUrl) => {
-    setFormData((prev) => ({ ...prev, image: imgUrl }));
-  };
 
-  const handleSubmit = async (e) => {
-    if (e && e.preventDefault) e.preventDefault();
-    console.log('Submitting profile form data:', formData); // Log form data before sending
-    const token = localStorage.getItem("token");
-    try {
-      await axios.post("http://localhost:5000/api/doctors/profile", formData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+    const [selectedImage, setSelectedImage] = useState(null);
 
-      alert("Profile submitted successfully!");
-      navigate("/dashboard");
-    } catch (error) {
-      alert(error?.response?.data?.message || "Error submitting profile");
-    }
-  };
+
+    const handleChange = (e) => {
+        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    };
+
+    const handleImageUpload = (imgUrl) => {
+        setFormData((prev) => ({ ...prev, image: imgUrl }));
+    };
+
+    const isFormIncomplete = !formData.name || !formData.email || !formData.specialization || !formData.password || !formData.experience || !formData.degrees || !formData.address || !formData.bio || !formData.fee;
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem("token");
+        const formDataToSend = new FormData();
+
+        Object.keys(formData).forEach((key) => {
+            formDataToSend.append(key, formData[key]);
+        });
+
+        if (selectedImage) {
+            formDataToSend.append("image", selectedImage);
+
+        }
+
+        try {
+            await axios.post("http://localhost:5000/api/doctors/profile", formDataToSend, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+            alert("Profile submitted successfully!");
+            navigate("/dashboard");
+        } catch (error) {
+            alert(error?.response?.data?.message || "Error submitting profile");
+        }
+    };
 
     return (
         <Box sx={{ margin: { xs: 1, sm: 3, md: 5 }, textAlign: "center", minHeight: "90vh" }}>
@@ -103,7 +126,7 @@ export default function DoctorProfile() {
                     bgcolor: "#f9fdfd",
                     textAlign: "left",
                     width: '100%',
-                    overflowX: 'hidden', // Prevent horizontal scroll
+                    overflowX: 'hidden',
                 }}
             >
                 <Typography variant="h6" fontWeight="bold" gutterBottom>
@@ -229,6 +252,7 @@ export default function DoctorProfile() {
                         <Grid item xs={12} sm={6} size={6}>
                             <TextField
                                 fullWidth
+                                select
                                 label="Consultation Fee "
                                 name="fee"
                                 value={formData.fee}
@@ -242,7 +266,13 @@ export default function DoctorProfile() {
                                     )
                                 }}
                                 sx={{ fontSize: { xs: 12, sm: 14 } }}
-                            />
+                            >{consultationFees.map((option) => (
+                                <MenuItem key={option} value={option}>
+                                    {option}
+                                </MenuItem>
+                            ))}
+                            </TextField>
+
                         </Grid>
                         {/* Medical Degrees */}
                         <Grid item xs={12} sm={6} size={12}>
@@ -289,7 +319,7 @@ export default function DoctorProfile() {
                             </Typography>
                             <Grid item xs={12} mt={2}>
                                 <Grid container spacing={2}>
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid item xs={12} sm={6} size={6}>
                                         <TextField
                                             fullWidth
                                             label="Available From"
@@ -307,7 +337,7 @@ export default function DoctorProfile() {
                                             sx={{ fontSize: { xs: 12, sm: 14 } }}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} sm={6}>
+                                    <Grid item xs={12} sm={6} >
                                         <TextField
                                             fullWidth
                                             label="Available To"
@@ -351,8 +381,21 @@ export default function DoctorProfile() {
                             </Grid>
                         </Grid>
                         <Grid item xs={12} size={12}>
-                            <ProfileUpload onCompleteSetup={handleSubmit}/>
+                            <ProfileUpload onImageSelect={setSelectedImage} />
                         </Grid>
+                        <Grid item xs={12} mt={3}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                fullWidth
+                                onClick={handleSubmit}
+                                disabled={isFormIncomplete}
+                                sx={{ py: 1.5, fontWeight: 'bold', fontSize: 16 }}
+                            >
+                                Submit Profile
+                            </Button>
+                        </Grid>
+
                     </Grid>
                 </Box>
             </Paper>

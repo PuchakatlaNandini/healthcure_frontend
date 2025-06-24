@@ -3,12 +3,13 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import DoctorLogin from '../pages/doctorLogin';
-import PatientLogin from '../pages/PatientLogin';
+import '../styles/navbar.css'; 
+import { useNavigate } from 'react-router-dom';
+
+ 
 
 const Navbar = () => {
-  const [showDoctorLogin, setShowDoctorLogin] = useState(false);
-  const [showPatientLogin, setShowPatientLogin] = useState(false);
+const navigate = useNavigate();
 
   return (
     <>
@@ -18,16 +19,15 @@ const Navbar = () => {
             <img src="/images/image.png" alt="Healthcure" style={{ width: 250, height: 48 }} />
           </Box>
           <Box sx={{ flexGrow: 1 }} />
-          <Button color="primary" variant="outlined" sx={{ mr: 1, minWidth: 90 }} onClick={() => setShowPatientLogin(true)}>
+          <Button color="primary" variant="outlined" sx={{ mr: 1, minWidth: 90 }} onClick={() => navigate("/patient/login") }>
             Patient Login
           </Button>
-          <Button color="primary" variant="contained" sx={{ minWidth: 90 }} onClick={() => setShowDoctorLogin(true)}>
+          <Button color="primary" variant="contained" sx={{ minWidth: 90 }} onClick={() => navigate("/doctor-login")}>
             Doctor Login
           </Button>
         </Toolbar>
       </AppBar>
-      {showDoctorLogin && <DoctorLogin onClose={() => setShowDoctorLogin(false)} />}
-      {showPatientLogin && <PatientLogin onClose={() => setShowPatientLogin(false)} />}
+    
     </>
   );
 };

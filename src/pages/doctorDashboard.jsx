@@ -11,6 +11,8 @@ export default function DoctorDashboard() {
   const [tab, setTab] = useState("appointments");
   const [appointments, setAppointments] = useState([]);
 
+
+
   useEffect(() => {
     const fetchAppointments = async () => {
       // Debug log for doctorId in localStorage
@@ -27,7 +29,13 @@ export default function DoctorDashboard() {
       try {
         const res = await axiosInstance.get(`/appointments/doctor/today/${doctorId}`);
         console.log('DoctorDashboard: fetched appointments from API:', res.data);
-        setAppointments(res.data);
+        setAppointments(res.data); 
+        const profileRes = await axiosInstance.get(`/api/doctors/${doctorId}`);
+        const name = profileRes.data?.name;
+        if (name) {
+          localStorage.setItem("doctorName", name);
+          console.log("Doctor name set in localStorage:", name);
+        }
       } catch (error) {
         console.error(error);
         // alert("Failed to fetch appointments");
@@ -41,10 +49,10 @@ export default function DoctorDashboard() {
     <Box sx={{
       minHeight: '100vh',
       background: '#f8f9fa',
-      px: 0, // Remove horizontal padding
+      px: 0, 
       pt: { xs: 1, sm: 2, md: 4 },
-      width: '100vw', // Ensure full viewport width
-      overflowX: 'hidden', // Prevent horizontal scroll
+      width: '100vw', 
+      overflowX: 'hidden', 
     }}>
       <DoctorNavbar />
       <Box
@@ -72,6 +80,7 @@ export default function DoctorDashboard() {
           >
             Appointments
           </Button>
+
           <Button
             sx={{ minWidth: 120, mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 } }}
             variant={tab === "profile" ? "contained" : "outlined"}
@@ -79,6 +88,7 @@ export default function DoctorDashboard() {
           >
             Profile
           </Button>
+
           <Button
             sx={{ minWidth: 120, mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 } }}
             variant={tab === "availability" ? "contained" : "outlined"}
@@ -87,9 +97,12 @@ export default function DoctorDashboard() {
             Availability
           </Button>
         </Stack>
+
         {tab === "appointments" && <AppointmentList appointments={appointments} />}
-        {tab === "profile" && <DoctorProfile />}
-        {tab === "availability" && <Availability />}
+{tab === "profile" && <DoctorProfile />}
+{tab === "availability" && (
+  <Availability onSaveSettings={() => setTab("appointments")} />
+)}
       </Box>
     </Box>
   );

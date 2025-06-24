@@ -2,11 +2,18 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, TextField, Button, Typography, Grid } from "@mui/material";
 import axios from "axios";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+
 
 export default function DoctorLogin({ onClose }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -25,6 +32,8 @@ export default function DoctorLogin({ onClose }) {
       }
       if (role === "doctor") {
         if (isProfileComplete) {
+          console.log("isProfileComplete:", response.data.isProfileComplete);
+
           console.log("Navigating to /dashboard");
           navigate("/dashboard");
         } else {
@@ -85,8 +94,8 @@ export default function DoctorLogin({ onClose }) {
           Doctor Login
         </Typography>
         <form onSubmit={handleLogin}>
-          <Grid container direction="column" alignItems="center" spacing={2}>
-            <Grid item xs={12}>
+          <Grid container direction="column" alignItems="center" spacing={2} >
+            <Grid item xs={12}  size={8}>
               <TextField
                 label="Email"
                 fullWidth
@@ -95,17 +104,26 @@ export default function DoctorLogin({ onClose }) {
                 required
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} size={8}>
               <TextField
                 label="Password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 fullWidth
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                InputProps={{
+    endAdornment: (
+      <InputAdornment position="end">
+        <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+          {showPassword ? <VisibilityOff /> : <Visibility />}
+        </IconButton>
+      </InputAdornment>
+    )
+  }}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} size={8}>
               <Button variant="contained" type="submit">
                 Login
               </Button>

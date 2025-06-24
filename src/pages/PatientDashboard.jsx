@@ -65,7 +65,7 @@ const PatientDashboard = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("patientToken");
-    localStorage.removeItem("currentUser"); 
+    localStorage.removeItem("currentUser");
     navigate("/login");
   };
 
@@ -100,10 +100,10 @@ const PatientDashboard = () => {
   return (
     <div className="dashboard-container">
       <header className="dashboard-header">
-        <img src={logo} alt="Logo" className="logo" style={{height: '40px', width: 'auto'}} />
+        <img src={logo} alt="Logo" className="logo" style={{ height: '40px', width: 'auto' }} />
         <div className="header-right">
           <span>Welcome, {user ? user.name : "Patient"}</span>
-          <button className="logout-btn" onClick={handleLogout}>
+          <button className="logout-btn" onClick={handleLogout} >
             Logout
           </button>
         </div>
@@ -152,9 +152,14 @@ const PatientDashboard = () => {
             {filteredDoctors.map((doc) => (
               <div key={doc._id} className="doctor-card">
                 <img
-                  src={doc.imageUrl || "https://via.placeholder.com/150"}
+                  src={`http://localhost:5000/api/doctor/${doc._id}/image`}
+
                   alt={doc.name}
                   className="doctor-photo"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://via.placeholder.com/150";
+                  }}
                 />
                 <div className="doctor-info">
                   <h3>{doc.name}</h3>
@@ -171,16 +176,15 @@ const PatientDashboard = () => {
                         return;
                       }
                       navigate("/book-appointment", {
-                        state: {
-                          doctor: doc,
-                          // user: {
-                          //   _id: user._id,
-                          //   name: user.name,
-                          //   email: user.email,
-                          // },
-                          user: user,
-                        },
-                      });
+  state: {
+    doctor: {
+      ...doc,
+      image: `http://localhost:5000/api/doctor/${doc._id}/image`,
+    },
+    user: user,
+  },
+});
+
                     }}
                     style={{ marginTop: '10px' }}
                   >
@@ -205,7 +209,12 @@ const PatientDashboard = () => {
             ) : (
               appointments.map(appt => (
                 <div key={appt._id} className="appointment-card">
-                  <p><b>Doctor:</b> {typeof appt.doctorId === 'object' ? (appt.doctorId.name || 'Unknown') : 'Unknown Doctor'}</p>
+                 <p><b>Doctor:</b> {
+  appt.doctorId && typeof appt.doctorId === 'object'
+    ? appt.doctorId.name || 'Unknown'
+    : 'Unknown Doctor'
+}</p>
+
                   <p><b>Date:</b> {appt.scheduledAt ? new Date(appt.scheduledAt).toLocaleString() : 'Unknown'}</p>
                   <p><b>Status:</b> {appt.status || 'Unknown'}</p>
                 </div>
