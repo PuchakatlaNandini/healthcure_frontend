@@ -5,18 +5,19 @@ import {
   Paper,
   Chip,
   Stack,
+  Button
 } from "@mui/material";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import axiosInstance from "../utils/axios";
 
-const AppointmentList = ({ appointments: propAppointments }) => {
-  const [appointments, setAppointments] = useState(propAppointments || []);
+const AppointmentList = ({ appointments: propAppointments,setAppointments }) => {
+  const [appointments, setLocalAppointments] = useState(propAppointments || []);
 
   useEffect(() => {
     console.log('AppointmentList: received appointments prop:', propAppointments);
     if (propAppointments) {
-      setAppointments(propAppointments);
+      setLocalAppointments(propAppointments);
     }
     // If appointments are not passed as props, fetch them for today
     if (!propAppointments) {
@@ -26,12 +27,39 @@ const AppointmentList = ({ appointments: propAppointments }) => {
       axiosInstance
         .get(`/appointments/doctor/today/${doctorId}`)
         .then((res) => {
-          setAppointments(res.data);
+          setLocalAppointments(res.data);
           console.log('AppointmentList: fetched appointments from API:', res.data);
         })
         .catch((err) => console.error("Error fetching today's appointments", err));
     }
   }, [propAppointments]);
+
+  //status
+  const updateStatus = async (appointmentId, newStatus) => {
+    try {
+      const res = await axiosInstance.patch(`/appointments/status/${appointmentId}`, {
+        status: newStatus,
+      });
+
+      const updated = res.data.appointment;
+
+//name remains same
+      const oldAppt = appointments.find((a) => a._id === appointmentId);
+    if (oldAppt && typeof updated.userId === "string") {
+      updated.userId = oldAppt.userId;
+    }
+
+      const updatedList = appointments.map((a) =>
+        a._id === appointmentId ? updated : a
+      );
+
+      setLocalAppointments(updatedList);
+      if (setAppointments) setAppointments(updatedList); 
+    } catch (error) {
+      console.error("Failed to update appointment status", error);
+      alert("Failed to update status");
+    }
+  };
 
   return (
     <Box sx={{ p: 3 }}>
@@ -71,6 +99,42 @@ const AppointmentList = ({ appointments: propAppointments }) => {
               variant="outlined"
             />
           </Stack>
+
+          {/* status button */}
+         
+          <Box sx={{ mt: 2, display: "flex", gap: 1 }}>
+            <Button
+              size="small"
+              variant="contained"
+              color="success"
+              onClick={() => updateStatus(appt._id, "confirmed")}
+              disabled={appt.status === "confirmed" }
+            >
+              Confirm
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              color="error"
+              onClick={() => updateStatus(appt._id, "cancelled")}
+              disabled={appt.status === "cancelled"}
+            >
+              Cancel
+            </Button>
+            <Button
+              size="small"
+              variant="outlined"
+              color="warning"
+              onClick={() => updateStatus(appt._id, "pending")}
+              disabled={appt.status === "pending"}
+            >
+               Pending
+            </Button>
+            </Box>
+
+
+
+
         </Paper>
       ))}
     </Box>

@@ -5,6 +5,15 @@ import axios from "axios";
 import "../styles/PatientDashboard.css";
 import logo from '../../public/images/image.png';
 import axiosInstance from "../utils/axios";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Stack,
+  Divider,
+} from "@mui/material";
+
 
 const PatientDashboard = () => {
   const [activeTab, setActiveTab] = useState("find");
@@ -63,6 +72,9 @@ const PatientDashboard = () => {
     
   }, [activeTab, location.state]);
 
+
+
+
   const handleLogout = () => {
     localStorage.removeItem("patientToken");
     localStorage.removeItem("currentUser");
@@ -95,6 +107,32 @@ const PatientDashboard = () => {
     } else {
       setFilteredDoctors(filtered);
     }
+  };
+
+  const handleCancel = async (appointmentId) => {
+    try {
+      const res = await axiosInstance.patch(`/appointments/status/${appointmentId}`, {
+        status: "cancelled",
+      });
+      alert("Appointment cancelled.");
+      setAppointments(prev =>
+        prev.map(appt => appt._id === appointmentId ? res.data.appointment : appt)
+      );
+    } catch (err) {
+      console.error("Cancel error:", err);
+      alert("Failed to cancel appointment.");
+    }
+  };
+
+  const handleReschedule = (appt) => {
+    navigate("/book-appointment", {
+      state: {
+        doctor: appt.doctorId,
+        user: user,
+        reschedule: true,
+        previousAppointment: appt,
+      },
+    });
   };
 
   return (
@@ -199,23 +237,64 @@ const PatientDashboard = () => {
         {activeTab === "appointments" && (
           <div className="appointments-section">
             <h2>📅 My Appointments</h2>
-            {appointments.length === 0 ? (
-              <p>No appointments found.</p>
-            ) : (
-              appointments.map(appt => (
-                <div key={appt._id} className="appointment-card">
-                  <p><b>Doctor:</b> {
-                    appt.doctorId && typeof appt.doctorId === 'object'
-                      ? appt.doctorId.name || 'Unknown'
-                      : 'Unknown Doctor'
-                  }</p>
+       {appointments.length === 0 ? (
+  <Typography variant="body1" color="textSecondary">
+    No appointments found.
+  </Typography>
+) : (
+  appointments.map((appt) => (
+    <Card
+      key={appt._id}
+      sx={{
+        mb: 2,
+        boxShadow: 3,
+        borderRadius: 2,
+        backgroundColor: "#f9f9f9",
+      }}
+    >
+      <CardContent>
+        <Typography variant="h6" gutterBottom>
+          Doctor: {appt.doctorId?.name || "Unknown"}
+        </Typography>
 
-                  <p><b>Date:</b> {appt.scheduledAt ? new Date(appt.scheduledAt).toLocaleString() : 'Unknown'}</p>
-                  <p><b>Status:</b> {appt.status || 'Unknown'}</p>
-                </div>
-              ))
-            )}
-          </div>
+        <Typography variant="body2" color="textSecondary">
+          Date:{" "}
+          {appt.scheduledAt
+            ? new Date(appt.scheduledAt).toLocaleString()
+            : "Unknown"}
+        </Typography>
+
+        <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+          Status: {appt.status || "Unknown"}
+        </Typography>
+
+        <Divider sx={{ my: 1 }} />
+
+        <Stack direction="row" spacing={2}>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => handleCancel(appt._id)}
+            disabled={appt.status === "cancelled"}  
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleReschedule(appt)}
+            disabled={appt.status === "reschedule"}
+          >
+            Reschedule
+          </Button>
+        </Stack>
+      </CardContent>
+    </Card>
+  ))
+)}
+
+            
+            </div>
         )}
       </div>
     </div>

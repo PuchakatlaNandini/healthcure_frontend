@@ -20,6 +20,7 @@ import PatientDashboard from "./pages/PatientDashboard";
 import BookAppointment from "./pages/BookAppointment";
 import PatientRegister from "./pages/PatientRegister";
 import PatientLogin from "./pages/PatientLogin";
+
 function App() {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -42,6 +43,7 @@ function App() {
           <Route path="/book-appointment" element={<BookAppointment />} />
           <Route path="/patient/register" element={<PatientRegister />} />
           <Route path="/patient/login" element={<PatientLogin />} />
+
         </Routes>
       </Router>
     </LocalizationProvider>

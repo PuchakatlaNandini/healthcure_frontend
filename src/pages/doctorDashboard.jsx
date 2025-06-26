@@ -7,6 +7,7 @@ import { Box, Button, Stack } from "@mui/material";
 import DoctorNavbar from "../components/doctorNavbar";
 import axiosInstance from "../utils/axios";
 
+
 export default function DoctorDashboard() {
   const [tab, setTab] = useState("appointments");
   const [appointments, setAppointments] = useState([]);
@@ -98,7 +99,7 @@ export default function DoctorDashboard() {
           </Button>
         </Stack>
 
-        {tab === "appointments" && <AppointmentList appointments={appointments} />}
+        {tab === "appointments" && <AppointmentList appointments={appointments}  setAppointments={setAppointments}/>}
         {tab === "profile" && <DoctorProfile />}
         {tab === "availability" && (
           <Availability onSaveSettings={() => setTab("appointments")} />
