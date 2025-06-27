@@ -6,13 +6,20 @@ import "../styles/PatientDashboard.css";
 import logo from '../../public/images/image.png';
 import axiosInstance from "../utils/axios";
 import {
-  Card,
-  CardContent,
+ Box,
   Typography,
   Button,
   Stack,
   Divider,
+  Card,
+  CardContent,
+  Container,
+  TextField,
+  MenuItem,
+Grid,
+
 } from "@mui/material";
+import LogoutIcon from '@mui/icons-material/Logout';
 
 
 const PatientDashboard = () => {
@@ -136,169 +143,191 @@ const PatientDashboard = () => {
   };
 
   return (
-    <div className="dashboard-container">
-      <header className="dashboard-header">
-        <img src={logo} alt="Logo" className="logo" style={{ height: '40px', width: 'auto' }} />
-        <div className="header-right">
-          <span>Welcome, {user ? user.name : "Patient"}</span>
-          <button className="logout-btn" onClick={handleLogout} >
-            Logout
-          </button>
-        </div>
-      </header>
+  <Container maxWidth="lg">
+    {/* Header */}
+    <Box display="flex" justifyContent="space-between" alignItems="center" py={2} mb={2} borderBottom={1}>
+      <img src={logo} alt="Logo" style={{ height: '40px', width: 'auto' }} />
+      <Box display="flex" alignItems="center" gap={2}>
+        <Typography variant="subtitle1">Welcome, {user ? user.name : "Patient"}</Typography>
+        <Button variant="outlined" color="error" onClick={handleLogout}>
+          <LogoutIcon sx={{ mr: 1 }} />
+          Logout
+        </Button>
+      </Box>
+    </Box>
 
-      <div className="tab-bar">
-        <button
-          className={activeTab === "find" ? "active" : ""}
-          onClick={() => setActiveTab("find")}
-        >
-          Find Doctors
-        </button>
-        <button
-          className={activeTab === "appointments" ? "active" : ""}
-          onClick={() => setActiveTab("appointments")}
-        >
-          My Appointments
-        </button>
-      </div>
+    {/* Tab Bar */}
+    <Stack direction="row" spacing={2} justifyContent="center" my={2} >
+      <Button sx={{ minWidth: 550 }}
+        variant={activeTab === "find" ? "contained" : "outlined"}
+        onClick={() => setActiveTab("find")}
+      >
+        Find Doctors
+      </Button>
+      <Button sx={{ minWidth: 550 }}
+        variant={activeTab === "appointments" ? "contained" : "outlined"}
+        onClick={() => setActiveTab("appointments")}
+      >
+        My Appointments
+      </Button>
+    </Stack>
 
-      <div className="tab-content">
-        {activeTab === "find" && (
-          <div className="find-doctor-section">
-            <h2>🔍 Find Your Doctor</h2>
-            <p>Search for doctors by name, specialization, or condition</p>
-            <div className="search-inputs">
-              <input
-                type="text"
-                placeholder="Search doctors by name..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-              />
-              <select
-                value={selectedSpecialization}
-                onChange={handleSpecializationChange}
-              >
-                <option value="">Select specialization</option>
-                <option value="Cardiology">Cardiology</option>
-                <option value="Dermatology">Dermatology</option>
-                <option value="Dentist">Dentist</option>
-                <option value="Neurologist">Neurologist</option>
-                <option value="Pediatrics">Pediatrics</option>
-              </select>
-            </div>
-
-            {filteredDoctors.map((doc) => (
-              <div key={doc._id} className="doctor-card">
-                <img
-                  src={`http://localhost:5000/api/doctor/${doc._id}/image`}
-
-                  alt={doc.name}
-                  className="doctor-photo"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "https://via.placeholder.com/150";
-                  }}
-                />
-                <div className="doctor-info">
-                  <h3>{doc.name}</h3>
-                  <p className="specialization">{doc.specialization}</p>
-                  <p>👨‍⚕️ {doc.experience} years experience</p>
-                  <p className="rating">{doc.rating}</p>
-                  {/* <p className="location">📍 {doc.location}</p> */}
-                  <p className="fee">₹{doc.fee} consultation</p>
-                  <button
-                    className="book-btn"
-                    onClick={() => {
-                      if (!user) {
-                        alert("User not loaded. Please login again.");
-                        return;
-                      }
-                      navigate("/book-appointment", {
-                        state: {
-                          doctor: {
-                            ...doc,
-                            image: `http://localhost:5000/api/doctor/${doc._id}/image`,
-                          },
-                          user: user,
-                        },
-                      });
-
-                    }}
-                    style={{ marginTop: '10px' }}
-                  >
-                    Book Appointment
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {activeTab === "appointments" && (
-          <div className="appointments-section">
-            <h2>📅 My Appointments</h2>
-       {appointments.length === 0 ? (
-  <Typography variant="body1" color="textSecondary">
-    No appointments found.
-  </Typography>
-) : (
-  appointments.map((appt) => (
-    <Card
-      key={appt._id}
-      sx={{
-        mb: 2,
-        boxShadow: 3,
-        borderRadius: 2,
-        backgroundColor: "#f9f9f9",
-      }}
-    >
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Doctor: {appt.doctorId?.name || "Unknown"}
+    {/* Content */}
+    {activeTab === "find" && (
+      <Box my={4}>
+        <Typography variant="h5" gutterBottom>🔍 Find Your Doctor</Typography>
+        <Typography variant="body2" mb={2}>
+          Search for doctors by name, specialization, or condition
         </Typography>
 
-        <Typography variant="body2" color="textSecondary">
-          Date:{" "}
-          {appt.scheduledAt
-            ? new Date(appt.scheduledAt).toLocaleString()
-            : "Unknown"}
-        </Typography>
-
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-          Status: {appt.status || "Unknown"}
-        </Typography>
-
-        <Divider sx={{ my: 1 }} />
-
-        <Stack direction="row" spacing={2}>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => handleCancel(appt._id)}
-            disabled={appt.status === "cancelled"}  
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mb={3}>
+          <TextField
+            label="Search doctors by name"
+            variant="outlined"
+            fullWidth
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+          <TextField
+            select
+            label="Specialization"
+            value={selectedSpecialization}
+            onChange={handleSpecializationChange}
+            fullWidth
           >
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleReschedule(appt)}
-            disabled={appt.status === "reschedule"}
-          >
-            Reschedule
-          </Button>
+            <MenuItem value="">All Specializations</MenuItem>
+            <MenuItem value="Cardiology">Cardiology</MenuItem>
+            <MenuItem value="Dermatology">Dermatology</MenuItem>
+            <MenuItem value="Dentist">Dentist</MenuItem>
+            <MenuItem value="Neurologist">Neurologist</MenuItem>
+            <MenuItem value="Pediatrics">Pediatrics</MenuItem>
+          </TextField>
         </Stack>
-      </CardContent>
-    </Card>
-  ))
+
+<Grid container spacing={4} display={'flex'} justifyContent="center" alignItems="center">
+  
+        {filteredDoctors.map((doc) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} >
+          <Card key={doc._id} sx={{ mb: 3,width: "100%", boxShadow: 3, borderRadius: 2,display: "flex", flexDirection: "column" }}>
+            <CardContent sx={{ display: "flex", alignItems: "center" }}>
+             {doc.hasImage ? (
+  <img
+    src={`http://localhost:5000/api/doctor/${doc._id}/image`}
+    alt={doc.name}
+    style={{
+      width: 100,
+      height: 100,
+      borderRadius: "50%",
+      marginRight: 16,
+    }}
+  />
+) : (
+  <Box
+    sx={{
+      width: 100,
+      height: 100,
+      borderRadius: "50%",
+      marginRight: 2,
+      backgroundColor: "#ccc",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize: 24,
+      fontWeight: "bold",
+    }}
+  >
+    {doc.name?.[0]}
+  </Box>
 )}
 
-            
-            </div>
-        )}
-      </div>
-    </div>
-  );
-};
+              <Box>
+                <Typography variant="h6">{doc.name}</Typography>
+                <Typography variant="body2" color="text.secondary">{doc.specialization}</Typography>
+                <Typography variant="body2">👨‍⚕️ {doc.experience} years experience</Typography>
+                <Typography variant="body2">₹{doc.fee} consultation</Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{ mt: 1 }}
+                  onClick={() => {
+                    if (!user) {
+                      alert("User not loaded. Please login again.");
+                      return;
+                    }
+                    navigate("/book-appointment", {
+                      state: {
+                        doctor: {
+                          ...doc,
+                          image: `http://localhost:5000/api/doctor/${doc._id}/image`,
+                        },
+                        user: user,
+                      },
+                    });
+                  }}
+                >
+                  Book Appointment
+                </Button>
+              </Box>
+            </CardContent>
+          </Card>
+          </Grid>
+        ))}
+        
+        </Grid>
+      </Box>
+    )}
 
+    {activeTab === "appointments" && (
+      <Box my={4}>
+        <Typography variant="h5" gutterBottom>📅 My Appointments</Typography>
+
+        {appointments.length === 0 ? (
+          <Typography variant="body1" color="textSecondary">
+            No appointments found.
+          </Typography>
+        ) : (
+          appointments.map((appt) => (
+            <Card key={appt._id} sx={{ mb: 2, boxShadow: 3, borderRadius: 2 }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Doctor: {appt.doctorId?.name || "Unknown"}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Date:{" "}
+                  {appt.scheduledAt
+                    ? new Date(appt.scheduledAt).toLocaleString()
+                    : "Unknown"}
+                </Typography>
+                <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+                  Status: {appt.status || "Unknown"}
+                </Typography>
+                <Divider sx={{ my: 1 }} />
+                <Stack direction="row" spacing={2}>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => handleCancel(appt._id)}
+                    disabled={appt.status === "cancelled"}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleReschedule(appt)}
+                    disabled={appt.status === "reschedule"}
+                  >
+                    Reschedule
+                  </Button>
+                </Stack>
+              </CardContent>
+            </Card>
+          ))
+        )}
+      </Box>
+    )}
+  </Container>
+);
+
+};
 export default PatientDashboard;
