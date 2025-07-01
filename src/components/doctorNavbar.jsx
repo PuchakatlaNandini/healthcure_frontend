@@ -109,7 +109,7 @@ const DoctorNavbar = () => {
           {/* Profile Info */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
             <Avatar
-              src={doctorImage||"https://cdn-icons-png.flaticon.com/512/4140/4140037.png"}
+              src={doctorImage || "https://cdn-icons-png.flaticon.com/512/4140/4140037.png"}
               sx={{ width: 56, height: 56 }}
             />
             <Box>

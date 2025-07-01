@@ -70,16 +70,16 @@ export default function DoctorProfile() {
     };
 
     const handleImageUpload = (file) => {
-  setFormData((prev) => ({ ...prev, image: file }));
+        setFormData((prev) => ({ ...prev, image: file }));
 
-  const reader = new FileReader();
-  reader.onloadend = () => {
-    localStorage.setItem("doctorImage", reader.result); 
-  };
-  if (file) {
-    reader.readAsDataURL(file);
-  }
-};
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            localStorage.setItem("doctorImage", reader.result);
+        };
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    };
 
 
     const isFormIncomplete = !formData.name || !formData.email || !formData.specialization || !formData.password || !formData.experience || !formData.degrees || !formData.address || !formData.bio || !formData.fee;

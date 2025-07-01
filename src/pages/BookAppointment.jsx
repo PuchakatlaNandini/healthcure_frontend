@@ -18,24 +18,15 @@ import {
   FaVideo,
   FaClinicMedical,
 } from "react-icons/fa";
-// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-// import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import dayjs from "dayjs";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-// import IconButton from "@mui/material/IconButton";
-// import CloseIcon from "@mui/icons-material/Close";
 
 
-// const BookAppointment = () => {
-  // const location = useLocation();
-  // const navigate = useNavigate();
-  const BookAppointment = ({ doctor, user, onClose, onSuccess }) => {
-const navigate = useNavigate();
+const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
+  const navigate = useNavigate();
   const location = useLocation();
-  // const [doctor, setDoctor] = useState(location.state?.doctor || JSON.parse(localStorage.getItem("selectedDoctor")));
-  // const user = JSON.parse(localStorage.getItem("currentUser"));
 
   const [consultationType, setConsultationType] = useState("In-Person");
   const [selectedDate, setSelectedDate] = useState(null);
@@ -48,20 +39,12 @@ const navigate = useNavigate();
   const [timeSlots, setTimeSlots] = useState([]);
 
   useEffect(() => {
-  if (!doctor) {
-    alert("Missing doctor info. Redirecting...");
-    navigate("/patient/dashboard");
-  }
-}, [doctor, navigate]);
+    if (!doctor) {
+      alert("Missing doctor info. Redirecting...");
+      navigate("/patient/dashboard");
+    }
+  }, [doctor, navigate]);
 
-  
-
-  // useEffect(() => {
-  //   if (!doctor || !user) {
-  //     alert("Missing doctor or user info. Redirecting...");
-  //     navigate("/patient/dashboard");
-  //   }
-  // }, [doctor, user, navigate]);
 
   useEffect(() => {
     if (!doctor?._id) return;
@@ -90,7 +73,7 @@ const navigate = useNavigate();
         });
 
         setBookedSlots(res.data.bookedSlots || []);
-        setAvailableSlots(timeSlots); 
+        setAvailableSlots(timeSlots);
       } catch (err) {
         console.error("Error fetching booked slots:", err);
         setBookedSlots([]);
@@ -125,11 +108,10 @@ const navigate = useNavigate();
       setLoading(true);
       await axios.post("http://localhost:5000/api/appointments/book", payload);
       setSuccess(true);
-      setBookedSlots(prev => [...prev, selectedSlot]); 
+      setBookedSlots(prev => [...prev, selectedSlot]);
       alert("Appointment booked successfully!");
       setLoading(false);
-      // navigate("/patient/dashboard", { state: { showAppointments: true } });
-      onSuccess(); 
+      onSuccess();
     } catch (error) {
       setLoading(false);
       alert(error.response?.data?.message || "Failed to book appointment.");
@@ -142,21 +124,21 @@ const navigate = useNavigate();
         Book Appointment
       </Typography>
 
-<IconButton
-    onClick={onClose}
-    sx={{
-      position: "absolute",
-      top: 8,
-      right: 8,
-      zIndex: 10,
-    }}
-  >
-    <CloseIcon />
-  </IconButton>
+      <IconButton
+        onClick={onClose}
+        sx={{
+          position: "absolute",
+          top: 8,
+          right: 8,
+          zIndex: 10,
+        }}
+      >
+        <CloseIcon />
+      </IconButton>
 
       <Grid container spacing={4} direction="row" alignContent="flex-start" justifyContent="flex-start">
         {/* Doctor Info */}
-        <Grid item xs={12} md={6}  textAlign="center">
+        <Grid item xs={12} md={6} textAlign="center">
           <Paper elevation={3} sx={{ p: 3 }}>
             <Stack spacing={1} alignItems="center">
               <Avatar
@@ -176,9 +158,8 @@ const navigate = useNavigate();
                 ))}
               </Stack>
               <Typography><FaUserMd /> {doctor?.experience} years experience</Typography>
-              <Typography><FaMapMarkerAlt /> {doctor?.address||"location is not"}</Typography>
-              
-              {/* <Typography><FaStar /> {doctor?.rating} ({doctor?.reviews} reviews)</Typography> */}
+              {/* <Typography><FaMapMarkerAlt /> {doctor?.address||"location is not"}</Typography> */}
+
               <Typography variant="body1" color="secondary">₹{doctor?.fee} consultation</Typography>
             </Stack>
           </Paper>
@@ -194,7 +175,7 @@ const navigate = useNavigate();
               {["In-Person", "Online"].map((type) => (
                 <Button
                   key={type}
-                  sx={{ minWidth: 200,height: 30 }}
+                  sx={{ minWidth: 200, height: 30 }}
                   variant={consultationType === type ? "contained" : "outlined"}
                   color={type === "In-Person" ? "secondary" : "primary"}
                   onClick={() => {
@@ -209,25 +190,25 @@ const navigate = useNavigate();
             </Stack>
 
             <Box mb={3} mt={3}  >
-             <MobileDatePicker
-  label="Select Date"
-  value={selectedDate}
-  onChange={(newValue) => {
-    setSelectedDate(newValue);
-    setSelectedSlot("");
-  }}
-  disablePast
-  slotProps={{
-    textField: {
-      fullWidth: false,
-      size: "small",
-      sx: {
-        width: "200px",
-        fontSize: "14px",
-      },
-    },
-  }}
-/>
+              <MobileDatePicker
+                label="Select Date"
+                value={selectedDate}
+                onChange={(newValue) => {
+                  setSelectedDate(newValue);
+                  setSelectedSlot("");
+                }}
+                disablePast
+                slotProps={{
+                  textField: {
+                    fullWidth: false,
+                    size: "small",
+                    sx: {
+                      width: "200px",
+                      fontSize: "14px",
+                    },
+                  },
+                }}
+              />
 
 
             </Box>
@@ -235,12 +216,12 @@ const navigate = useNavigate();
             {selectedDate && availableSlots.length > 0 && (
               <Box>
                 <Typography variant="subtitle1" gutterBottom>Select Time Slot:</Typography>
-                <Stack direction="row" spacing={1}  sx={{display: "flex", flexWrap: "wrap",gap:1,justifyContent:"flex-start"}}>
+                <Stack direction="row" spacing={1} sx={{ display: "flex", flexWrap: "wrap", gap: 1, justifyContent: "flex-start" }}>
                   {availableSlots.map((slot) => {
                     const isBooked = bookedSlots.includes(slot);
                     return (
                       <Button
-                  
+
                         key={slot}
                         variant={selectedSlot === slot ? "contained" : "outlined"}
                         onClick={() => !isBooked && setSelectedSlot(slot)}
@@ -276,15 +257,6 @@ const navigate = useNavigate();
                 Appointment successfully created!
               </Typography>
             )}
-            {/* <Button
-  variant="outlined"
-  color="error"
-  sx={{ mt: 2 }}
-  onClick={onClose}
->
-  Close
-</Button> */}
-
           </Paper>
         </Grid>
       </Grid>

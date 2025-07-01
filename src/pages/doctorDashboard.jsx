@@ -4,7 +4,7 @@ import DoctorProfile from '../pages/doctorProfile';
 import Availability from "../components/availability";
 
 import { Box, Button, Stack } from "@mui/material";
-import DoctorNavbar from "../components/doctorNavbar";
+import DoctorNavbar from "../components/DoctorNavBar";
 import axiosInstance from "../utils/axios";
 
 
@@ -16,7 +16,7 @@ export default function DoctorDashboard() {
 
   useEffect(() => {
     const fetchAppointments = async () => {
-    
+
       const doctorIdLS = localStorage.getItem("doctorId");
       const doctorIdAlt = localStorage.getItem("doctor_id");
       console.log('DoctorDashboard: doctorId from localStorage =', doctorIdLS, 'doctor_id =', doctorIdAlt);
@@ -70,13 +70,13 @@ export default function DoctorDashboard() {
           px: 0,
           // mr: 3,
           // ml: 3
-         
+
         }}
       >
         {/* Tab Buttons with spacing */}
-        <Stack direction="row" spacing={2} sx={{ mb: 2,mt:3,ml: { xs: 1, sm: 3 }, flexWrap: 'wrap', justifyContent: { xs: 'flex-start', sm: 'flex-start' }, gap: 2 }}>
+        <Stack direction="row" spacing={2} sx={{ mb: 2, mt: 3, ml: { xs: 1, sm: 3 }, flexWrap: 'wrap', justifyContent: { xs: 'flex-start', sm: 'flex-start' }, gap: 2 }}>
           <Button
-            sx={{ minWidth: 120, textTransform:"none", mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 } }}
+            sx={{ minWidth: 120, textTransform: "none", mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 } }}
             variant={tab === "appointments" ? "contained" : "outlined"}
             onClick={() => setTab("appointments")}
           >
@@ -84,7 +84,7 @@ export default function DoctorDashboard() {
           </Button>
 
           <Button
-            sx={{ minWidth: 120, textTransform:"none", mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 } }}
+            sx={{ minWidth: 120, textTransform: "none", mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 } }}
             variant={tab === "profile" ? "contained" : "outlined"}
             onClick={() => setTab("profile")}
           >
@@ -92,7 +92,7 @@ export default function DoctorDashboard() {
           </Button>
 
           <Button
-            sx={{ minWidth: 120, textTransform:"none", mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 } }}
+            sx={{ minWidth: 120, textTransform: "none", mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 } }}
             variant={tab === "availability" ? "contained" : "outlined"}
             onClick={() => setTab("availability")}
           >
@@ -100,7 +100,7 @@ export default function DoctorDashboard() {
           </Button>
         </Stack>
 
-        {tab === "appointments" && <AppointmentList appointments={appointments}  setAppointments={setAppointments}/>}
+        {tab === "appointments" && <AppointmentList appointments={appointments} setAppointments={setAppointments} />}
         {tab === "profile" && <DoctorProfile />}
         {tab === "availability" && (
           <Availability onSaveSettings={() => setTab("appointments")} />

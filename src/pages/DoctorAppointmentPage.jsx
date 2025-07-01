@@ -70,7 +70,7 @@ const DoctorAppointmentsPage = () => {
     <Box >
       <DoctorNavBar />
       <Typography variant="h4" align="center" sx={{ mt: 2, mb: 7 }} />
-      <Box sx={{ px: 2, py: 3, width: "100%", maxWidth: 1200, mx: "auto", overflowY: "hidden" ,height:"470px",ml:4}}>
+      <Box sx={{ px: 2, py: 3, width: "100%", maxWidth: 1200, mx: "auto", overflowY: "hidden", height: "470px", ml: 4 }}>
 
 
         <Typography variant="h5" gutterBottom>
@@ -91,7 +91,7 @@ const DoctorAppointmentsPage = () => {
 
         <Box sx={{ width: "100%" }}>
           <DataGrid autoHeight rows={rows} columns={columns} pageSize={5}
-          rowHeight={50}
+            rowHeight={50}
             pageSizeOptions={[5]}
             initialState={{
               pagination: {

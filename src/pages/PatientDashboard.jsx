@@ -35,8 +35,9 @@ const PatientDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const [openBooking, setOpenBooking] = useState(false);
-const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [openBooking, setOpenBooking] = useState(null);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+
 
 
   // Set active tab to appointments if coming from booking
@@ -138,13 +139,22 @@ const [selectedDoctor, setSelectedDoctor] = useState(null);
   };
 
   const handleReschedule = (appt) => {
-    navigate("/book-appointment", {
-      state: {
-        doctor: appt.doctorId,
-        user: user,
-        reschedule: true,
-        previousAppointment: appt,
-      },
+    if (!user) {
+      alert("User not loaded. Please login again.");
+      return;
+    }
+
+    const doctor = {
+      ...appt.doctorId,
+      image: `http://localhost:5000/api/doctor/${appt.doctorId._id}/image`,
+    };
+
+    setSelectedDoctor(doctor);
+
+    // Pass reschedule flag and previous appointment
+    setOpenBooking({
+      reschedule: true,
+      previousAppointment: appt,
     });
   };
 
@@ -155,7 +165,7 @@ const [selectedDoctor, setSelectedDoctor] = useState(null);
         <img src={logo} alt="Logo" style={{ height: '40px', width: 'auto' }} />
         <Box display="flex" alignItems="center" gap={2}>
           <Typography variant="subtitle1">Welcome, {user ? user.name : "Patient"}</Typography>
-          <Button variant="outlined" color="error" onClick={handleLogout} sx={{textTransform: "none"}}>
+          <Button variant="outlined" color="error" onClick={handleLogout} sx={{ textTransform: "none" }}>
             <LogoutIcon sx={{ mr: 1 }} />
             Logout
           </Button>
@@ -164,13 +174,13 @@ const [selectedDoctor, setSelectedDoctor] = useState(null);
 
       {/* Tab Bar */}
       <Stack direction="row" spacing={2} justifyContent="flex-start" my={2} >
-        <Button sx={{ minWidth: 550 ,textTransform: "none"}}
+        <Button sx={{ minWidth: 550, textTransform: "none" }}
           variant={activeTab === "find" ? "contained" : "outlined"}
           onClick={() => setActiveTab("find")}
         >
           Find Doctors
         </Button>
-        <Button sx={{ minWidth: 550,textTransform: "none" }}
+        <Button sx={{ minWidth: 550, textTransform: "none" }}
           variant={activeTab === "appointments" ? "contained" : "outlined"}
           onClick={() => setActiveTab("appointments")}
         >
@@ -191,7 +201,7 @@ const [selectedDoctor, setSelectedDoctor] = useState(null);
               label="Search doctors by name"
               variant="outlined"
               fullWidth
-             size="small"
+              size="small"
               value={searchTerm}
               onChange={handleSearchChange}
             />
@@ -201,7 +211,7 @@ const [selectedDoctor, setSelectedDoctor] = useState(null);
               value={selectedSpecialization}
               onChange={handleSpecializationChange}
               fullWidth
-               size="small"
+              size="small"
             >
               <MenuItem value="">All Specializations</MenuItem>
               <MenuItem value="Cardiology">Cardiology</MenuItem>
@@ -244,8 +254,8 @@ const [selectedDoctor, setSelectedDoctor] = useState(null);
                           fontWeight: "bold",
                         }}
                       > {(doc.name && typeof doc.name === "string" && doc.name.trim().length > 0)
-    ? doc.name.trim()[0].toUpperCase()
-    : "?"}
+                        ? doc.name.trim()[0].toUpperCase()
+                        : "?"}
                       </Box>
                     )}
 
@@ -257,20 +267,21 @@ const [selectedDoctor, setSelectedDoctor] = useState(null);
                       <Button
                         variant="contained"
                         color="primary"
-                        sx={{ mt: 1 ,textTransform: "none"}}
+                        sx={{ mt: 1, textTransform: "none" }}
                         onClick={() => {
                           if (!user) {
                             alert("User not loaded. Please login again.");
                             return;
                           }
-                          //save
-                         setSelectedDoctor({
-  ...doc,
-  image: `http://localhost:5000/api/doctor/${doc._id}/image`,
-});
-setOpenBooking(true);
 
+                          setSelectedDoctor({
+                            ...doc,
+                            image: `http://localhost:5000/api/doctor/${doc._id}/image`,
+                          });
+
+                          setOpenBooking({ reschedule: false });
                         }}
+
                       >
                         Book Appointment
                       </Button>
@@ -286,80 +297,84 @@ setOpenBooking(true);
 
 
 
-     {activeTab === "appointments" && (
-  <Box my={4}>
-    <Typography variant="h5" gutterBottom>📅 My Appointments</Typography>
+      {activeTab === "appointments" && (
+        <Box my={4}>
+          <Typography variant="h5" gutterBottom>📅 My Appointments</Typography>
 
-    <Grid container spacing={4} justifyContent="flex-start" alignItems="flex-start">
-      {appointments.length === 0 ? (
-        <Grid item xs={12}>
-          <Typography variant="body1" color="textSecondary" align="center">
-            No appointments found.
-          </Typography>
-        </Grid>
-      ) : (
-         [...appointments]
-          .sort((a, b) => new Date(b.scheduledAt) - new Date(a.scheduledAt)) // Newest first
-          .map((appt) => (
-          <Grid item xs={12} sm={4} md={4}  key={appt._id} sx={{ display: "inline", justifyContent: "center" ,width: "30%"}}>
-            <Card sx={{ boxShadow: 3, borderRadius: 2 ,}}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  Doctor: {appt.doctorId?.name || "Unknown"}
+          <Grid container spacing={4} justifyContent="flex-start" alignItems="flex-start">
+            {appointments.length === 0 ? (
+              <Grid item xs={12}>
+                <Typography variant="body1" color="textSecondary" align="center">
+                  No appointments found.
                 </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Date:{" "}
-                  {appt.scheduledAt
-                    ? new Date(appt.scheduledAt).toLocaleString()
-                    : "Unknown"}
-                </Typography>
-                <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-                  Status: {appt.status || "Unknown"}
-                </Typography>
-                <Divider sx={{ my: 1 }} />
-                <Stack direction="row" spacing={2}>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => handleCancel(appt._id)}
-                    disabled={appt.status === "cancelled"}
-                    sx={{textTransform: "none"}}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleReschedule(appt)}
-                    disabled={appt.status === "reschedule"}
-                    sx={{textTransform: "none"}}
-                  >
-                    Reschedule
-                  </Button>
-                </Stack>
-              </CardContent>
-            </Card>
+              </Grid>
+            ) : (
+              [...appointments]
+                .sort((a, b) => new Date(b.scheduledAt) - new Date(a.scheduledAt)) // Newest first
+                .map((appt) => (
+                  <Grid item xs={12} sm={4} md={4} key={appt._id} sx={{ display: "inline", justifyContent: "center", width: "30%" }}>
+                    <Card sx={{ boxShadow: 3, borderRadius: 2, }}>
+                      <CardContent>
+                        <Typography variant="h6" gutterBottom>
+                          Doctor: {appt.doctorId?.name || "Unknown"}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                          Date:{" "}
+                          {appt.scheduledAt
+                            ? new Date(appt.scheduledAt).toLocaleString()
+                            : "Unknown"}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+                          Status: {appt.status || "Unknown"}
+                        </Typography>
+                        <Divider sx={{ my: 1 }} />
+                        <Stack direction="row" spacing={2}>
+                          <Button
+                            variant="contained"
+                            color="error"
+                            onClick={() => handleCancel(appt._id)}
+                            disabled={appt.status === "cancelled"}
+                            sx={{ textTransform: "none" }}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handleReschedule(appt)}
+                            disabled={appt.status === "reschedule"}
+                            sx={{ textTransform: "none" }}
+                          >
+                            Reschedule
+                          </Button>
+                        </Stack>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))
+            )}
           </Grid>
-        ))
+
+
+
+        </Box>
       )}
-    </Grid>
 
+      {/* modal for booking/rescheduling appointment */}
+      <Dialog open={!!openBooking} onClose={() => setOpenBooking(null)} maxWidth="md" fullWidth>
+        <BookAppointment
+          doctor={selectedDoctor}
+          user={user}
+          reschedule={openBooking?.reschedule}
+          previousAppointment={openBooking?.previousAppointment}
+          onClose={() => setOpenBooking(null)}
+          onSuccess={() => {
+            setOpenBooking(null);
+            setActiveTab("appointments");
+          }}
+        />
+      </Dialog>
 
-
-  </Box>
-)}
-{/* modal for booking appointment */}
-<Dialog open={openBooking} onClose={() => setOpenBooking(false)} maxWidth="md" fullWidth>
-  <BookAppointment
-    doctor={selectedDoctor}
-    user={user}
-    onClose={() => setOpenBooking(false)}
-    onSuccess={() => {
-      setOpenBooking(false);
-      setActiveTab("appointments");
-    }}
-  />
-</Dialog>
 
     </Container >
   );
