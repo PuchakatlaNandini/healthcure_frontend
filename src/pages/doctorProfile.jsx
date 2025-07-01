@@ -69,9 +69,18 @@ export default function DoctorProfile() {
         setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    const handleImageUpload = (imgUrl) => {
-        setFormData((prev) => ({ ...prev, image: imgUrl }));
+    const handleImageUpload = (file) => {
+        setFormData((prev) => ({ ...prev, image: file }));
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            localStorage.setItem("doctorImage", reader.result);
+        };
+        if (file) {
+            reader.readAsDataURL(file);
+        }
     };
+
 
     const isFormIncomplete = !formData.name || !formData.email || !formData.specialization || !formData.password || !formData.experience || !formData.degrees || !formData.address || !formData.bio || !formData.fee;
 
@@ -105,7 +114,7 @@ export default function DoctorProfile() {
     };
 
     return (
-        <Box sx={{ margin: { xs: 1, sm: 3, md: 5 }, textAlign: "center", minHeight: "90vh" }}>
+        <Box sx={{ margin: { xs: 1, sm: 3, md: 5 }, textAlign: "flex-start", minHeight: "90vh" }}>
             {/* Header */}
             <Typography variant="h5" fontWeight="bold" gutterBottom>
                 Complete Your Doctor Profile
@@ -119,7 +128,7 @@ export default function DoctorProfile() {
                 elevation={3}
                 sx={{
                     maxWidth: { xs: '100%', sm: 500, md: 600 },
-                    mx: "auto",
+                    // mx: "auto",
                     p: { xs: 2, sm: 3, md: 4 },
                     mt: { xs: 2, sm: 3, md: 4 },
                     borderRadius: 3,
@@ -381,7 +390,7 @@ export default function DoctorProfile() {
                             </Grid>
                         </Grid>
                         <Grid item xs={12} size={12}>
-                            <ProfileUpload onImageSelect={setSelectedImage} />
+                            <ProfileUpload onImageSelect={handleImageUpload} />
                         </Grid>
                         <Grid item xs={12} mt={3}>
                             <Button
