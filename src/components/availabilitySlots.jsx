@@ -64,6 +64,7 @@ export default function AvailabilitySlotManager({ slots = [], setSlots, onSaveSe
             fullWidth
             type="time"
             label="Start Time"
+            size="small"
             value={startTime}
             onChange={(e) => setStartTime(e.target.value)}
             InputProps={{
@@ -78,6 +79,7 @@ export default function AvailabilitySlotManager({ slots = [], setSlots, onSaveSe
             fullWidth
             type="time"
             label="End Time"
+            size="small"
             value={endTime}
             onChange={(e) => setEndTime(e.target.value)}
             InputProps={{
@@ -88,7 +90,7 @@ export default function AvailabilitySlotManager({ slots = [], setSlots, onSaveSe
           />
         </Grid>
         <Grid item xs={12} md={4} textAlign="right">
-          <Button variant="contained" onClick={handleAddSlot}>
+          <Button variant="contained"  sx={{textTransform:"none"}} onClick={handleAddSlot}>
             Add Slot
           </Button>
         </Grid>
@@ -141,7 +143,7 @@ export default function AvailabilitySlotManager({ slots = [], setSlots, onSaveSe
           variant="contained"
           color="success"
           onClick={handleSaveTimeSlots}
-          sx={{ mr: 2 }}
+          sx={{ mr: 2 ,textTransform:"none"}}
         >
           Save Time Slots
         </Button>
@@ -149,6 +151,7 @@ export default function AvailabilitySlotManager({ slots = [], setSlots, onSaveSe
           variant="contained"
           color="primary"
           onClick={handleSaveSettings}
+       sx={{textTransform:"none"}}
         >
           Save Settings
         </Button>

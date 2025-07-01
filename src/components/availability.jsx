@@ -7,8 +7,7 @@ import {
     Button,
     Switch
 } from "@mui/material";
-import { AccessTimeFilled } from "@mui/icons-material";
-import FormControlLabel from '@mui/material/FormControlLabel';
+
 import { styled } from '@mui/material/styles';
 import AvailabilitySlotManager from "./availabilitySlots";
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
@@ -43,59 +42,25 @@ export default function Availability({ onSaveSettings }) {
 
     return (
 
-        <Grid>
+        <Grid sx={{ml:3}} width={{ xs: '100%', sm: 800, md: 700 }}>
             <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Availability Settings</Typography>
-            <Typography variant="subtitle1">Set your working hours and manage appointment slots</Typography>
-            <Grid item xs={12} sx={{ mt: 2 }}>
-                <Typography variant="h6" gutterBottom>
-                    Working Hours
-                </Typography>
-
-
-                <Grid item xs={12} mt={2} >
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} sm={6} size={6}>
-                            <TextField
-                                fullWidth
-                                label="Available From"
-                                defaultValue="09:00 AM"
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <AccessTimeFilled />
-                                        </InputAdornment>
-                                    )
-                                }}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} sm={6} size={6}>
-                            <TextField
-                                fullWidth
-                                label="Available To"
-                                defaultValue="10:00 PM"
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <AccessTimeFilled />
-                                        </InputAdornment>
-                                    )
-                                }}
-                            />
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Grid>
+            <Typography variant="subtitle1">Set your working Dates and manage Appointment slots</Typography>
+           
 
             <Typography variant="h6" sx={{ mt: 3 }}>Set Available Dates</Typography>
             <DateCalendar
+            sx={{ml:0}}
                 value={currentDate}
                 onChange={(date) => {
                     setCurrentDate(date);
                     handleDateChange(date);
                 }}
+                shouldDisableDate={(date) => {
+
+    return dayjs(date).isBefore(dayjs().startOf('day'));
+                }}
             />
-            <Grid container spacing={1} sx={{ mt: 1 }}>
+            <Grid container spacing={1} sx={{ mt: 0,ml:2 }}>
                 {selectedDates.map(date => (
                     <Grid item key={date}>
                         <Button variant="outlined" color="primary" onClick={() => handleRemoveDate(date)}>
@@ -104,14 +69,14 @@ export default function Availability({ onSaveSettings }) {
                     </Grid>
                 ))}
             </Grid>
-            <Button variant="contained" color="success" sx={{ mt: 2 }} onClick={handleSaveAvailability}>
+            <Button variant="contained" color="success" sx={{ mt: 2 ,ml:2,textTransform:"none"}} onClick={handleSaveAvailability}>
                 Save Availability
             </Button>
 
             <Grid>
-                <Typography variant="h6" sx={{ mt: 3 }}>Available Timeslots</Typography>
+                <Typography variant="h6" sx={{ mt: 3 ,ml:2}}>Available Timeslots</Typography>
 
-                <Grid item xs={12}>
+                <Grid item xs={12} >
                     <AvailabilitySlotManager slots={slots} setSlots={setSlots} onSaveSettings={onSaveSettings} />
                 </Grid>
 

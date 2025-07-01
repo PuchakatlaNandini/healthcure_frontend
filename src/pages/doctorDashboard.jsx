@@ -59,23 +59,24 @@ export default function DoctorDashboard() {
       <Box
         sx={{
           p: { xs: 1, sm: 2, md: 4 },
-          maxWidth: { xs: '100%', sm: 700, md: 1200 },
+          // maxWidth: { xs: '100%', sm: 700, md: 1200 },
           mx: 'auto',
           background: '#fff',
           boxShadow: 2,
           borderRadius: 2,
           width: '100%',
-          minHeight: 300,
+          minHeight: 450,
           overflowX: 'auto',
           px: 0,
-          mr: 3,
-          ml: 3
+          // mr: 3,
+          // ml: 3
+         
         }}
       >
         {/* Tab Buttons with spacing */}
-        <Stack direction="row" spacing={2} sx={{ mb: 3, flexWrap: 'wrap', justifyContent: { xs: 'center', sm: 'flex-start' }, gap: 2 }}>
+        <Stack direction="row" spacing={2} sx={{ mb: 2,mt:3,ml: { xs: 1, sm: 3 }, flexWrap: 'wrap', justifyContent: { xs: 'flex-start', sm: 'flex-start' }, gap: 2 }}>
           <Button
-            sx={{ minWidth: 120, mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 } }}
+            sx={{ minWidth: 120, textTransform:"none", mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 } }}
             variant={tab === "appointments" ? "contained" : "outlined"}
             onClick={() => setTab("appointments")}
           >
@@ -83,7 +84,7 @@ export default function DoctorDashboard() {
           </Button>
 
           <Button
-            sx={{ minWidth: 120, mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 } }}
+            sx={{ minWidth: 120, textTransform:"none", mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 } }}
             variant={tab === "profile" ? "contained" : "outlined"}
             onClick={() => setTab("profile")}
           >
@@ -91,7 +92,7 @@ export default function DoctorDashboard() {
           </Button>
 
           <Button
-            sx={{ minWidth: 120, mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 } }}
+            sx={{ minWidth: 120, textTransform:"none", mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 } }}
             variant={tab === "availability" ? "contained" : "outlined"}
             onClick={() => setTab("availability")}
           >

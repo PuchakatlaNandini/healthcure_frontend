@@ -14,6 +14,7 @@ import DoctorProfile from "./pages/doctorProfile";
 import DoctorLogin from "./pages/doctorLogin";
 import DoctorRegister from "./pages/doctorRegister";
 import Availability from "./components/availability";
+import DoctorAppointmentsPage from "./pages/DoctorAppointmentPage";
 
 // Pages - Patient
 import PatientDashboard from "./pages/PatientDashboard";
@@ -37,6 +38,7 @@ function App() {
           <Route path="/dashboard" element={<DoctorDashboard />} />
           <Route path="/doctor/appointments/today" element={<AppointmentList />} />
           <Route path="/doctor/availability" element={<Availability />} />
+          <Route path="/doctor/appointments" element={<DoctorAppointmentsPage />} />
 
           {/* Patient Routes */}
           <Route path="/patient/dashboard" element={<PatientDashboard />} />

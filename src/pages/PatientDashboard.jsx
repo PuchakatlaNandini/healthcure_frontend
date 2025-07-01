@@ -6,7 +6,7 @@ import "../styles/PatientDashboard.css";
 import logo from '../../public/images/image.png';
 import axiosInstance from "../utils/axios";
 import {
- Box,
+  Box,
   Typography,
   Button,
   Stack,
@@ -16,10 +16,13 @@ import {
   Container,
   TextField,
   MenuItem,
-Grid,
+  Grid,
 
 } from "@mui/material";
 import LogoutIcon from '@mui/icons-material/Logout';
+import Dialog from "@mui/material/Dialog";
+import BookAppointment from "./BookAppointment";
+
 
 
 const PatientDashboard = () => {
@@ -32,6 +35,9 @@ const PatientDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const [openBooking, setOpenBooking] = useState(false);
+const [selectedDoctor, setSelectedDoctor] = useState(null);
+
 
   // Set active tab to appointments if coming from booking
   useEffect(() => {
@@ -76,7 +82,7 @@ const PatientDashboard = () => {
         })
         .catch(err => console.error("Error fetching user appointments", err));
     }
-    
+
   }, [activeTab, location.state]);
 
 
@@ -143,151 +149,160 @@ const PatientDashboard = () => {
   };
 
   return (
-  <Container maxWidth="lg">
-    {/* Header */}
-    <Box display="flex" justifyContent="space-between" alignItems="center" py={2} mb={2} borderBottom={1}>
-      <img src={logo} alt="Logo" style={{ height: '40px', width: 'auto' }} />
-      <Box display="flex" alignItems="center" gap={2}>
-        <Typography variant="subtitle1">Welcome, {user ? user.name : "Patient"}</Typography>
-        <Button variant="outlined" color="error" onClick={handleLogout}>
-          <LogoutIcon sx={{ mr: 1 }} />
-          Logout
+    <Container maxWidth="lg">
+      {/* Header */}
+      <Box display="flex" justifyContent="space-between" alignItems="center" py={2} mb={2} borderBottom={1}>
+        <img src={logo} alt="Logo" style={{ height: '40px', width: 'auto' }} />
+        <Box display="flex" alignItems="center" gap={2}>
+          <Typography variant="subtitle1">Welcome, {user ? user.name : "Patient"}</Typography>
+          <Button variant="outlined" color="error" onClick={handleLogout} sx={{textTransform: "none"}}>
+            <LogoutIcon sx={{ mr: 1 }} />
+            Logout
+          </Button>
+        </Box>
+      </Box>
+
+      {/* Tab Bar */}
+      <Stack direction="row" spacing={2} justifyContent="flex-start" my={2} >
+        <Button sx={{ minWidth: 550 ,textTransform: "none"}}
+          variant={activeTab === "find" ? "contained" : "outlined"}
+          onClick={() => setActiveTab("find")}
+        >
+          Find Doctors
         </Button>
-      </Box>
-    </Box>
+        <Button sx={{ minWidth: 550,textTransform: "none" }}
+          variant={activeTab === "appointments" ? "contained" : "outlined"}
+          onClick={() => setActiveTab("appointments")}
+        >
+          My Appointments
+        </Button>
+      </Stack>
 
-    {/* Tab Bar */}
-    <Stack direction="row" spacing={2} justifyContent="center" my={2} >
-      <Button sx={{ minWidth: 550 }}
-        variant={activeTab === "find" ? "contained" : "outlined"}
-        onClick={() => setActiveTab("find")}
-      >
-        Find Doctors
-      </Button>
-      <Button sx={{ minWidth: 550 }}
-        variant={activeTab === "appointments" ? "contained" : "outlined"}
-        onClick={() => setActiveTab("appointments")}
-      >
-        My Appointments
-      </Button>
-    </Stack>
+      {/* Content */}
+      {activeTab === "find" && (
+        <Box my={4}>
+          <Typography variant="h5" gutterBottom>🔍 Find Your Doctor</Typography>
+          <Typography variant="body2" mb={2}  >
+            Search for doctors by name, specialization, or condition
+          </Typography>
 
-    {/* Content */}
-    {activeTab === "find" && (
-      <Box my={4}>
-        <Typography variant="h5" gutterBottom>🔍 Find Your Doctor</Typography>
-        <Typography variant="body2" mb={2}>
-          Search for doctors by name, specialization, or condition
-        </Typography>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mb={3} >
+            <TextField
+              label="Search doctors by name"
+              variant="outlined"
+              fullWidth
+             size="small"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+            <TextField
+              select
+              label="Specialization"
+              value={selectedSpecialization}
+              onChange={handleSpecializationChange}
+              fullWidth
+               size="small"
+            >
+              <MenuItem value="">All Specializations</MenuItem>
+              <MenuItem value="Cardiology">Cardiology</MenuItem>
+              <MenuItem value="Dermatology">Dermatology</MenuItem>
+              <MenuItem value="Dentist">Dentist</MenuItem>
+              <MenuItem value="Neurologist">Neurologist</MenuItem>
+              <MenuItem value="Pediatrics">Pediatrics</MenuItem>
+            </TextField>
+          </Stack>
 
-        <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mb={3}>
-          <TextField
-            label="Search doctors by name"
-            variant="outlined"
-            fullWidth
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-          <TextField
-            select
-            label="Specialization"
-            value={selectedSpecialization}
-            onChange={handleSpecializationChange}
-            fullWidth
-          >
-            <MenuItem value="">All Specializations</MenuItem>
-            <MenuItem value="Cardiology">Cardiology</MenuItem>
-            <MenuItem value="Dermatology">Dermatology</MenuItem>
-            <MenuItem value="Dentist">Dentist</MenuItem>
-            <MenuItem value="Neurologist">Neurologist</MenuItem>
-            <MenuItem value="Pediatrics">Pediatrics</MenuItem>
-          </TextField>
-        </Stack>
+          <Grid container spacing={4} display={'flex'} justifyContent="flex-start" alignItems="flex-start">
 
-<Grid container spacing={4} display={'flex'} justifyContent="center" alignItems="center">
-  
-        {filteredDoctors.map((doc) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} >
-          <Card key={doc._id} sx={{ mb: 3,width: "100%", boxShadow: 3, borderRadius: 2,display: "flex", flexDirection: "column" }}>
-            <CardContent sx={{ display: "flex", alignItems: "center" }}>
-             {doc.hasImage ? (
-  <img
-    src={`http://localhost:5000/api/doctor/${doc._id}/image`}
-    alt={doc.name}
-    style={{
-      width: 100,
-      height: 100,
-      borderRadius: "50%",
-      marginRight: 16,
-    }}
-  />
-) : (
-  <Box
-    sx={{
-      width: 100,
-      height: 100,
-      borderRadius: "50%",
-      marginRight: 2,
-      backgroundColor: "#ccc",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      fontSize: 24,
-      fontWeight: "bold",
-    }}
-  >
-    {doc.name?.[0]}
-  </Box>
-)}
+            {filteredDoctors.map((doc) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} >
+                <Card key={doc._id} sx={{ mb: 3, width: "100%", boxShadow: 3, borderRadius: 2, display: "flex", flexDirection: "column" }}>
+                  <CardContent sx={{ display: "flex", alignItems: "center" }}>
+                    {doc.hasImage ? (
+                      <img
+                        src={`http://localhost:5000/api/doctor/${doc._id}/image`}
+                        alt={doc.name}
+                        style={{
+                          width: 100,
+                          height: 100,
+                          borderRadius: "50%",
+                          marginRight: 16,
+                        }}
+                      />
+                    ) : (
+                      <Box
+                        sx={{
+                          width: 100,
+                          height: 100,
+                          borderRadius: "50%",
+                          marginRight: 2,
+                          backgroundColor: "#ccc",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 24,
+                          fontWeight: "bold",
+                        }}
+                      > {(doc.name && typeof doc.name === "string" && doc.name.trim().length > 0)
+    ? doc.name.trim()[0].toUpperCase()
+    : "?"}
+                      </Box>
+                    )}
 
-              <Box>
-                <Typography variant="h6">{doc.name}</Typography>
-                <Typography variant="body2" color="text.secondary">{doc.specialization}</Typography>
-                <Typography variant="body2">👨‍⚕️ {doc.experience} years experience</Typography>
-                <Typography variant="body2">₹{doc.fee} consultation</Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{ mt: 1 }}
-                  onClick={() => {
-                    if (!user) {
-                      alert("User not loaded. Please login again.");
-                      return;
-                    }
-                    navigate("/book-appointment", {
-                      state: {
-                        doctor: {
-                          ...doc,
-                          image: `http://localhost:5000/api/doctor/${doc._id}/image`,
-                        },
-                        user: user,
-                      },
-                    });
-                  }}
-                >
-                  Book Appointment
-                </Button>
-              </Box>
-            </CardContent>
-          </Card>
+                    <Box>
+                      <Typography variant="h6">{doc.name}</Typography>
+                      <Typography variant="body2" color="text.secondary">{doc.specialization}</Typography>
+                      <Typography variant="body2">👨‍⚕️ {doc.experience} years experience</Typography>
+                      <Typography variant="body2">₹{doc.fee} consultation</Typography>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        sx={{ mt: 1 ,textTransform: "none"}}
+                        onClick={() => {
+                          if (!user) {
+                            alert("User not loaded. Please login again.");
+                            return;
+                          }
+                          //save
+                         setSelectedDoctor({
+  ...doc,
+  image: `http://localhost:5000/api/doctor/${doc._id}/image`,
+});
+setOpenBooking(true);
+
+                        }}
+                      >
+                        Book Appointment
+                      </Button>
+                    </Box>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+
           </Grid>
-        ))}
-        
-        </Grid>
-      </Box>
-    )}
+        </Box>
+      )}
 
-    {activeTab === "appointments" && (
-      <Box my={4}>
-        <Typography variant="h5" gutterBottom>📅 My Appointments</Typography>
 
-        {appointments.length === 0 ? (
-          <Typography variant="body1" color="textSecondary">
+
+     {activeTab === "appointments" && (
+  <Box my={4}>
+    <Typography variant="h5" gutterBottom>📅 My Appointments</Typography>
+
+    <Grid container spacing={4} justifyContent="flex-start" alignItems="flex-start">
+      {appointments.length === 0 ? (
+        <Grid item xs={12}>
+          <Typography variant="body1" color="textSecondary" align="center">
             No appointments found.
           </Typography>
-        ) : (
-          appointments.map((appt) => (
-            <Card key={appt._id} sx={{ mb: 2, boxShadow: 3, borderRadius: 2 }}>
+        </Grid>
+      ) : (
+         [...appointments]
+          .sort((a, b) => new Date(b.scheduledAt) - new Date(a.scheduledAt)) // Newest first
+          .map((appt) => (
+          <Grid item xs={12} sm={4} md={4}  key={appt._id} sx={{ display: "inline", justifyContent: "center" ,width: "30%"}}>
+            <Card sx={{ boxShadow: 3, borderRadius: 2 ,}}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
                   Doctor: {appt.doctorId?.name || "Unknown"}
@@ -308,6 +323,7 @@ const PatientDashboard = () => {
                     color="error"
                     onClick={() => handleCancel(appt._id)}
                     disabled={appt.status === "cancelled"}
+                    sx={{textTransform: "none"}}
                   >
                     Cancel
                   </Button>
@@ -316,18 +332,37 @@ const PatientDashboard = () => {
                     color="primary"
                     onClick={() => handleReschedule(appt)}
                     disabled={appt.status === "reschedule"}
+                    sx={{textTransform: "none"}}
                   >
                     Reschedule
                   </Button>
                 </Stack>
               </CardContent>
             </Card>
-          ))
-        )}
-      </Box>
-    )}
-  </Container>
-);
+          </Grid>
+        ))
+      )}
+    </Grid>
+
+
+
+  </Box>
+)}
+{/* modal for booking appointment */}
+<Dialog open={openBooking} onClose={() => setOpenBooking(false)} maxWidth="md" fullWidth>
+  <BookAppointment
+    doctor={selectedDoctor}
+    user={user}
+    onClose={() => setOpenBooking(false)}
+    onSuccess={() => {
+      setOpenBooking(false);
+      setActiveTab("appointments");
+    }}
+  />
+</Dialog>
+
+    </Container >
+  );
 
 };
 export default PatientDashboard;
