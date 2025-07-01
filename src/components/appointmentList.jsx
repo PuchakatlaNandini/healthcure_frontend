@@ -34,32 +34,44 @@ const AppointmentList = ({ appointments: propAppointments,setAppointments }) => 
     }
   }, [propAppointments]);
 
-  //status
-  const updateStatus = async (appointmentId, newStatus) => {
-    try {
-      const res = await axiosInstance.patch(`/appointments/status/${appointmentId}`, {
-        status: newStatus,
-      });
+const updateStatus = async (appointmentId, newStatus) => {
+  try {
+    const res = await axiosInstance.patch(`/appointments/status/${appointmentId}`, {
+      status: newStatus,
+    });
 
-      const updated = res.data.appointment;
+    const updated = res.data.appointment;
 
-//name remains same
-      const oldAppt = appointments.find((a) => a._id === appointmentId);
+    const oldAppt = appointments.find((a) => a._id === appointmentId);
     if (oldAppt && typeof updated.userId === "string") {
       updated.userId = oldAppt.userId;
     }
 
-      const updatedList = appointments.map((a) =>
-        a._id === appointmentId ? updated : a
-      );
+    const updatedList = appointments.map((a) =>
+      a._id === appointmentId ? updated : a
+    );
 
-      setLocalAppointments(updatedList);
-      if (setAppointments) setAppointments(updatedList); 
-    } catch (error) {
-      console.error("Failed to update appointment status", error);
+    setLocalAppointments(updatedList);
+    if (setAppointments) setAppointments(updatedList);
+
+    if (newStatus === "cancelled") {
+      alert("Appointment cancelled and confirmation email sent.");
+    } else {
+      alert(`Appointment status updated to ${newStatus}.`);
+    }
+
+  } catch (error) {
+    console.error("Failed to update appointment status", error);
+    // Show proper error message if less than 1 hour
+    if (error.response && error.response.data?.message) {
+      alert(error.response.data.message);
+    } else {
       alert("Failed to update status");
     }
-  };
+  }
+};
+
+
 
   return (
     <Box sx={{ p: 3 }}>
@@ -121,7 +133,7 @@ const AppointmentList = ({ appointments: propAppointments,setAppointments }) => 
             >
               Cancel
             </Button>
-            <Button
+            {/* <Button
               size="small"
               variant="outlined"
               color="warning"
@@ -129,7 +141,7 @@ const AppointmentList = ({ appointments: propAppointments,setAppointments }) => 
               disabled={appt.status === "pending"}
             >
                Pending
-            </Button>
+            </Button> */}
             </Box>
 
 

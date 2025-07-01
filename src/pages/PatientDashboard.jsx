@@ -32,6 +32,8 @@ const PatientDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const [cancelledAppointments, setCancelledAppointments] = useState([]);
+  
 
   // Set active tab to appointments if coming from booking
   useEffect(() => {
@@ -80,12 +82,10 @@ const PatientDashboard = () => {
   }, [activeTab, location.state]);
 
 
-
-
   const handleLogout = () => {
     localStorage.removeItem("patientToken");
     localStorage.removeItem("currentUser");
-    navigate("/login");
+    navigate("/patient/login");
   };
 
   const handleSpecializationChange = (e) => {
@@ -117,19 +117,28 @@ const PatientDashboard = () => {
   };
 
   const handleCancel = async (appointmentId) => {
-    try {
-      const res = await axiosInstance.patch(`/appointments/status/${appointmentId}`, {
-        status: "cancelled",
-      });
-      alert("Appointment cancelled.");
-      setAppointments(prev =>
-        prev.map(appt => appt._id === appointmentId ? res.data.appointment : appt)
-      );
-    } catch (err) {
-      console.error("Cancel error:", err);
-      alert("Failed to cancel appointment.");
-    }
-  };
+  try {
+    const res = await axiosInstance.patch(`/appointments/status/${appointmentId}`, {
+      status: "cancelled",
+    });
+
+    const updated = res.data.appointment;
+    const updatedList = appointments.map((a) =>
+      a._id === appointmentId ? updated : a
+    );
+
+    setAppointments(updatedList);
+
+    // Add this line to track cancelled appointment
+    setCancelledAppointments(prev => [...prev, appointmentId]);
+
+    alert("Appointment cancelled and confirmation email sent.");
+  } catch (error) {
+    console.error("Cancel error:", error);
+    alert("Failed to cancel appointment.");
+  }
+};
+
 
   const handleReschedule = (appt) => {
     navigate("/book-appointment", {
@@ -175,7 +184,7 @@ const PatientDashboard = () => {
     {/* Content */}
     {activeTab === "find" && (
       <Box my={4}>
-        <Typography variant="h5" gutterBottom>🔍 Find Your Doctor</Typography>
+        <Typography variant="h5" gutterBottom>Find Your Doctor</Typography>
         <Typography variant="body2" mb={2}>
           Search for doctors by name, specialization, or condition
         </Typography>
@@ -279,7 +288,7 @@ const PatientDashboard = () => {
 
     {activeTab === "appointments" && (
       <Box my={4}>
-        <Typography variant="h5" gutterBottom>📅 My Appointments</Typography>
+        <Typography variant="h5" gutterBottom> My Appointments</Typography>
 
         {appointments.length === 0 ? (
           <Typography variant="body1" color="textSecondary">
@@ -315,10 +324,11 @@ const PatientDashboard = () => {
                     variant="contained"
                     color="primary"
                     onClick={() => handleReschedule(appt)}
-                    disabled={appt.status === "reschedule"}
-                  >
-                    Reschedule
-                  </Button>
+                    disabled={appt.status === "reschedule" || !cancelledAppointments.includes(appt._id)}
+                    >
+                       Reschedule
+                   </Button>
+
                 </Stack>
               </CardContent>
             </Card>

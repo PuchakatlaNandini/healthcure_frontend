@@ -215,6 +215,7 @@ const BookAppointment = () => {
                   setSelectedDate(newValue); 
                   setSelectedSlot(""); 
                 }}
+                minDate={dayjs()} // disables past dates
                 renderInput={(params) => <TextField fullWidth {...params} />}
               />
 

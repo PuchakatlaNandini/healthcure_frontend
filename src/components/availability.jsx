@@ -94,6 +94,9 @@ export default function Availability({ onSaveSettings }) {
                     setCurrentDate(date);
                     handleDateChange(date);
                 }}
+                shouldDisableDate={(date) => {
+                return dayjs(date).isBefore(dayjs(), 'day');
+       }}
             />
             <Grid container spacing={1} sx={{ mt: 1 }}>
                 {selectedDates.map(date => (
