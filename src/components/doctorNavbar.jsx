@@ -44,6 +44,8 @@ const DoctorNavbar = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("doctorName");
+    localStorage.removeItem("doctorImage");
+
     navigate("/doctor/register");
   };
 

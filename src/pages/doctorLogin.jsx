@@ -28,6 +28,7 @@ export default function DoctorLogin({ onClose }) {
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
       localStorage.setItem("doctorName", name);
+      // localStorage.setItem("doctorImage",image)
       if (doctorId) {
         localStorage.setItem("doctorId", doctorId);
       }

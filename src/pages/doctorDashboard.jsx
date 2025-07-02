@@ -4,7 +4,7 @@ import DoctorProfile from '../pages/doctorProfile';
 import Availability from "../components/availability";
 
 import { Box, Button, Stack } from "@mui/material";
-import DoctorNavbar from "../components/DoctorNavBar";
+import DoctorNavbar from "../components/doctorNavbar";
 import axiosInstance from "../utils/axios";
 
 
