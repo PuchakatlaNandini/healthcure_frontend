@@ -12,6 +12,7 @@ import {
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function DoctorRegister() {
   const [form, setForm] = useState({
@@ -36,7 +37,7 @@ export default function DoctorRegister() {
 
     try {
       await axios.post("http://localhost:5000/api/doctors/register", form);
-      alert("Registration successful! Please login.");
+      toast.success("Registration successful! Please login.");
       navigate("/doctor-login");
     } catch (error) {
       setError(error.response?.data?.message || "Registration failed");

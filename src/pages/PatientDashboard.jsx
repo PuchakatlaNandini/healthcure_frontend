@@ -382,19 +382,6 @@ const PatientDashboard = () => {
                         <Divider sx={{ my: 1 }} />
                         <Stack direction="row" spacing={2}>
                           <Button
-<<<<<<< HEAD
-                           variant="contained"
-                           color="error"
-                           onClick={() => {
-                           setAppointmentToCancel(appt._id);
-                           setCancelReason("");
-                           setCancelReasonDialogOpen(true);
-                            }}
-                           disabled={appt.status === "cancelled"}
-                           sx={{ textTransform: "none" }}
-                          >
-                          Cancel
-=======
                             variant="contained"
                             color="error"
                             onClick={() => {
@@ -406,7 +393,6 @@ const PatientDashboard = () => {
                             sx={{ textTransform: "none" }}
                           >
                             Cancel
->>>>>>> 24b619e9211b76ab6d4ff6277afd705138ca6d68
                           </Button>
 
                           <Button
