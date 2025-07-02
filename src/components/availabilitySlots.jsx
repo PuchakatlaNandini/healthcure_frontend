@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   TextField,
@@ -12,16 +12,58 @@ import {
 } from "@mui/material";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 
-export default function AvailabilitySlotManager({ slots = [], setSlots, onSaveSettings }) {
+export default function AvailabilitySlotManager({
+  slots = [],
+  setSlots,
+  onSaveSettings,
+  selectedDate,
+  doctorId,
+}) {
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const navigate = useNavigate();
+  const [bookedSlots, setBookedSlots] = useState([]);
+
+  useEffect(() => {
+    const fetchBookedSlots = async () => {
+      if (!selectedDate || !doctorId) return;
+      try {
+        const res = await axios.get(`/appointments/booked-slots`, {
+          params: {
+            date: selectedDate,
+            doctorId,
+          },
+        });
+        setBookedSlots(res.data.bookedSlots || []);
+      } catch (err) {
+        console.error("Failed to fetch booked slots", err);
+      }
+    };
+
+    fetchBookedSlots();
+  }, [selectedDate, doctorId]);
+
+  const isSlotBooked = (start, end) => {
+    const formatted = `${formatTime(start)} - ${formatTime(end)}`;
+    return bookedSlots.includes(formatted);
+  };
+
+  const formatTime = (time) => {
+    const [hour, minute] = time.split(":");
+    const date = new Date();
+    date.setHours(+hour);
+    date.setMinutes(+minute);
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+  };
 
   const handleAddSlot = () => {
     if (!startTime || !endTime) return;
+
+    if (isSlotBooked(startTime, endTime)) {
+      alert("This slot is already booked.");
+      return;
+    }
 
     const newSlot = {
       id: Date.now(),
@@ -39,7 +81,6 @@ export default function AvailabilitySlotManager({ slots = [], setSlots, onSaveSe
   };
 
   const handleSaveSettings = () => {
-    console.log('Save settings clicked');
     if (onSaveSettings) onSaveSettings();
   };
 
@@ -57,7 +98,6 @@ export default function AvailabilitySlotManager({ slots = [], setSlots, onSaveSe
 
   return (
     <Box sx={{ p: 3 }}>
-      {/* Slot Input Fields */}
       <Grid container spacing={2} alignItems="center">
         <Grid item xs={12} md={4}>
           <TextField
@@ -67,11 +107,7 @@ export default function AvailabilitySlotManager({ slots = [], setSlots, onSaveSe
             size="small"
             value={startTime}
             onChange={(e) => setStartTime(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start"></InputAdornment>
-              ),
-            }}
+            InputProps={{ startAdornment: <InputAdornment position="start"></InputAdornment> }}
           />
         </Grid>
         <Grid item xs={12} md={4}>
@@ -82,11 +118,7 @@ export default function AvailabilitySlotManager({ slots = [], setSlots, onSaveSe
             size="small"
             value={endTime}
             onChange={(e) => setEndTime(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start"></InputAdornment>
-              ),
-            }}
+            InputProps={{ startAdornment: <InputAdornment position="start"></InputAdornment> }}
           />
         </Grid>
         <Grid item xs={12} md={4} textAlign="right">
@@ -96,7 +128,6 @@ export default function AvailabilitySlotManager({ slots = [], setSlots, onSaveSe
         </Grid>
       </Grid>
 
-      {/* Slot List */}
       <Box sx={{ mt: 4 }}>
         <Grid container spacing={2}>
           {slots.map((slot) => (
@@ -113,21 +144,18 @@ export default function AvailabilitySlotManager({ slots = [], setSlots, onSaveSe
                   border: "1px solid #d1fae5",
                 }}
               >
-                {/* Time + Label */}
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <AccessTimeFilledIcon fontSize="small" />
                   <Typography variant="body1" fontWeight={500}>
                     {slot.start} - {slot.end}
                   </Typography>
                   <Chip
-                    label="Available"
-                    color="success"
+                    label={isSlotBooked(slot.start, slot.end) ? "Booked" : "Available"}
+                    color={isSlotBooked(slot.start, slot.end) ? "default" : "success"}
                     size="small"
                     sx={{ fontWeight: 500 }}
                   />
                 </Box>
-
-                {/* Delete Button */}
                 <IconButton onClick={() => handleDelete(slot.id)} color="error">
                   <DeleteIcon />
                 </IconButton>
@@ -137,7 +165,6 @@ export default function AvailabilitySlotManager({ slots = [], setSlots, onSaveSe
         </Grid>
       </Box>
 
-      {/* Save Settings Button */}
       <Box textAlign="left" sx={{ mt: 2 }}>
         <Button
           variant="contained"

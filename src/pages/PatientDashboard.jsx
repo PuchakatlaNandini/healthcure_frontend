@@ -150,8 +150,6 @@ const PatientDashboard = () => {
     };
 
     setSelectedDoctor(doctor);
-
-    // Pass reschedule flag and previous appointment
     setOpenBooking({
       reschedule: true,
       previousAppointment: appt,
@@ -159,9 +157,26 @@ const PatientDashboard = () => {
   };
 
   return (
-    <Container maxWidth="lg">
+   <Box sx={{ pt: 10, px: 4,width:'82%' }}>
+
       {/* Header */}
-      <Box display="flex" justifyContent="space-between" alignItems="center" py={2} mb={2} borderBottom={1}>
+      <Box
+  display="flex"
+  justifyContent="space-between"
+  alignItems="center"
+  py={2}
+  px={4}
+  sx={{
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1100,
+    backgroundColor: "#fff",
+    borderBottom: "1px solid #ccc",
+  }}
+>
+
         <img src={logo} alt="Logo" style={{ height: '40px', width: 'auto' }} />
         <Box display="flex" alignItems="center" gap={2}>
           <Typography variant="subtitle1">Welcome, {user ? user.name : "Patient"}</Typography>
@@ -376,7 +391,7 @@ const PatientDashboard = () => {
       </Dialog>
 
 
-    </Container >
+    </Box >
   );
 
 };
