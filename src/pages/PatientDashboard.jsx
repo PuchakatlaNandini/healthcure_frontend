@@ -37,6 +37,11 @@ const PatientDashboard = () => {
   const location = useLocation();
   const [openBooking, setOpenBooking] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [cancelledAppointments, setCancelledAppointments] = useState([]);
+  const [cancelReasonDialogOpen, setCancelReasonDialogOpen] = useState(false);
+  const [cancelReason, setCancelReason] = useState("");
+  const [appointmentToCancel, setAppointmentToCancel] = useState(null);
+
 
 
 
@@ -134,15 +139,16 @@ const PatientDashboard = () => {
 
     setAppointments(updatedList);
 
-    // Add this line to track cancelled appointment
+    // Ensure this state is defined
     setCancelledAppointments(prev => [...prev, appointmentId]);
 
     alert("Appointment cancelled and confirmation email sent.");
   } catch (error) {
-    console.error("Cancel error:", error);
-    alert("Failed to cancel appointment.");
+    console.error("Cancel error:", error?.response?.data || error.message);
+    alert(`Failed to cancel appointment: ${error?.response?.data?.message || error.message}`);
   }
 };
+
 
 
   const handleReschedule = (appt) => {
@@ -164,6 +170,29 @@ const PatientDashboard = () => {
       previousAppointment: appt,
     });
   };
+
+  const submitCancellation = async () => {
+  try {
+    const res = await axiosInstance.patch(`/appointments/status/${appointmentToCancel}`, {
+      status: "cancelled",
+      reason: cancelReason,
+    });
+
+    const updated = res.data.appointment;
+    const updatedList = appointments.map((a) =>
+      a._id === appointmentToCancel ? updated : a
+    );
+    setAppointments(updatedList);
+    setCancelledAppointments(prev => [...prev, appointmentToCancel]);
+
+    setCancelReasonDialogOpen(false);
+    alert("Appointment cancelled with reason sent.");
+  } catch (error) {
+    console.error("Cancel error:", error);
+    alert("Failed to cancel appointment.");
+  }
+};
+
 
   return (
     <Container maxWidth="lg">
@@ -337,23 +366,27 @@ const PatientDashboard = () => {
                         <Divider sx={{ my: 1 }} />
                         <Stack direction="row" spacing={2}>
                           <Button
-                            variant="contained"
-                            color="error"
-                            onClick={() => handleCancel(appt._id)}
-                            disabled={appt.status === "cancelled"}
-                            sx={{ textTransform: "none" }}
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={() => handleReschedule(appt)}
-                            disabled={appt.status === "reschedule"}
-                            sx={{ textTransform: "none" }}
-                          >
-                            Reschedule
-                          </Button>
+  variant="contained"
+  color="error"
+  onClick={() => {
+    setAppointmentToCancel(appt._id);
+    setCancelReason("");
+    setCancelReasonDialogOpen(true);
+  }}
+  disabled={appt.status === "cancelled"}
+  sx={{ textTransform: "none" }}
+>
+  Cancel
+</Button>
+
+                           <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleReschedule(appt)}
+                    disabled={appt.status === "reschedule" || !cancelledAppointments.includes(appt._id)}
+                    >
+                       Reschedule
+                   </Button>
                         </Stack>
                       </CardContent>
                     </Card>
@@ -361,9 +394,6 @@ const PatientDashboard = () => {
                 ))
             )}
           </Grid>
-
-
-
         </Box>
       )}
 
@@ -381,7 +411,23 @@ const PatientDashboard = () => {
           }}
         />
       </Dialog>
-
+<Dialog open={cancelReasonDialogOpen} onClose={() => setCancelReasonDialogOpen(false)}>
+  <Box p={3} width={400}>
+    <Typography variant="h6" gutterBottom>Reason for Cancellation</Typography>
+    <TextField
+      fullWidth
+      multiline
+      minRows={3}
+      value={cancelReason}
+      onChange={(e) => setCancelReason(e.target.value)}
+      placeholder="Enter reason for cancelling..."
+    />
+    <Stack direction="row" justifyContent="flex-end" spacing={2} mt={2}>
+      <Button onClick={() => setCancelReasonDialogOpen(false)} variant="outlined">Cancel</Button>
+      <Button onClick={submitCancellation} variant="contained" disabled={!cancelReason.trim()}>Submit</Button>
+    </Stack>
+  </Box>
+</Dialog>
 
     </Container >
   );
