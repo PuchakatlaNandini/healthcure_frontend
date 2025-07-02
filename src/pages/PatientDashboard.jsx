@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import "../styles/PatientDashboard.css";
-import logo from '../../public/images/image.png';
+import logo from '../../src/assets/images/image.png';
 import axiosInstance from "../utils/axios";
 import {
   Box,
@@ -366,18 +366,18 @@ const PatientDashboard = () => {
                         <Divider sx={{ my: 1 }} />
                         <Stack direction="row" spacing={2}>
                           <Button
-  variant="contained"
-  color="error"
-  onClick={() => {
-    setAppointmentToCancel(appt._id);
-    setCancelReason("");
-    setCancelReasonDialogOpen(true);
-  }}
-  disabled={appt.status === "cancelled"}
-  sx={{ textTransform: "none" }}
->
-  Cancel
-</Button>
+                           variant="contained"
+                           color="error"
+                           onClick={() => {
+                           setAppointmentToCancel(appt._id);
+                           setCancelReason("");
+                           setCancelReasonDialogOpen(true);
+                            }}
+                           disabled={appt.status === "cancelled"}
+                           sx={{ textTransform: "none" }}
+                          >
+                          Cancel
+                          </Button>
 
                            <Button
                     variant="contained"

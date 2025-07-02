@@ -14,7 +14,7 @@ import axiosInstance from "../utils/axios";
 
 const AppointmentList = ({ appointments: propAppointments, setAppointments }) => {
   const [appointments, setLocalAppointments] = useState(propAppointments || []);
-
+  
   useEffect(() => {
     console.log('AppointmentList: received appointments prop:', propAppointments);
     if (propAppointments) {
