@@ -23,11 +23,9 @@ import {
 
 const AppointmentList = ({ appointments: propAppointments, setAppointments }) => {
   const [appointments, setLocalAppointments] = useState(propAppointments || []);
-
-  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+ const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 const [cancelReason, setCancelReason] = useState("");
 const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
-
 
   useEffect(() => {
     console.log('AppointmentList: received appointments prop:', propAppointments);
@@ -179,7 +177,7 @@ const handleDoctorCancel = async () => {
                     variant="contained"
                     color="error"
                     onClick={() => { setSelectedAppointmentId(appt._id);
-    setCancelDialogOpen(true);}}
+                     setCancelDialogOpen(true);}}
                     disabled={appt.status === "cancelled"}
                   >
                     Cancel

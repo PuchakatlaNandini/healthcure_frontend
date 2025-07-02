@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import "../styles/PatientDashboard.css";
-import logo from '../../public/images/image.png';
+import logo from '../../src/assets/images/image.png';
 import axiosInstance from "../utils/axios";
 import {
   Box,
