@@ -2,17 +2,14 @@ import React, { useState } from "react";
 import {
     Typography,
     Grid,
-    TextField,
-    InputAdornment,
     Button,
-    Switch
 } from "@mui/material";
 
-import { styled } from '@mui/material/styles';
 import AvailabilitySlotManager from "./availabilitySlots";
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import dayjs from 'dayjs';
 import axios from '../utils/axios';
+import { toast } from "react-toastify";
 
 export default function Availability({ onSaveSettings }) {
 
@@ -34,9 +31,9 @@ export default function Availability({ onSaveSettings }) {
         try {
 
             await axios.put('/doctors/availability', { dates: selectedDates });
-            alert('Availability saved!');
+            toast.success('Availability saved!');
         } catch (err) {
-            alert('Error saving availability');
+            toast.error('Error saving availability');
         }
     };
 
@@ -79,10 +76,7 @@ export default function Availability({ onSaveSettings }) {
                 <Grid item xs={12} >
                     <AvailabilitySlotManager slots={slots} setSlots={setSlots} onSaveSettings={onSaveSettings} />
                 </Grid>
-
             </Grid>
-
-
         </Grid>
     )
 }

@@ -22,7 +22,7 @@ import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import dayjs from "dayjs";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-
+import { toast } from "react-toastify";
 
 const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
   const navigate = useNavigate();
@@ -40,7 +40,7 @@ const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
 
   useEffect(() => {
     if (!doctor) {
-      alert("Missing doctor info. Redirecting...");
+      toast.error("Missing doctor info. Redirecting...");
       navigate("/patient/dashboard");
     }
   }, [doctor, navigate]);
@@ -109,12 +109,12 @@ const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
       await axios.post("http://localhost:5000/api/appointments/book", payload);
       setSuccess(true);
       setBookedSlots(prev => [...prev, selectedSlot]);
-      alert("Appointment booked successfully!");
+      toast.success("Appointment booked successfully!");
       setLoading(false);
       onSuccess();
     } catch (error) {
       setLoading(false);
-      alert(error.response?.data?.message || "Failed to book appointment.");
+      toast.error(error.response?.data?.message || "Failed to book appointment.");
     }
   };
 

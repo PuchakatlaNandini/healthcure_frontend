@@ -6,6 +6,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
+import { toast } from "react-toastify";
 
 
 export default function DoctorLogin({ onClose }) {
@@ -45,7 +46,7 @@ export default function DoctorLogin({ onClose }) {
         navigate("/");
       }
     } catch (error) {
-      alert(error.response?.data?.message || "Login failed");
+      toast.error(error.response?.data?.message || "Login failed");
     }
   };
 

@@ -11,10 +11,28 @@ import {
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import axiosInstance from "../utils/axios";
+import { toast } from "react-toastify";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+} from "@mui/material";
+
 
 const AppointmentList = ({ appointments: propAppointments, setAppointments }) => {
   const [appointments, setLocalAppointments] = useState(propAppointments || []);
+<<<<<<< HEAD
   
+=======
+
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+const [cancelReason, setCancelReason] = useState("");
+const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
+
+
+>>>>>>> 24b619e9211b76ab6d4ff6277afd705138ca6d68
   useEffect(() => {
     console.log('AppointmentList: received appointments prop:', propAppointments);
     if (propAppointments) {
@@ -37,7 +55,7 @@ const AppointmentList = ({ appointments: propAppointments, setAppointments }) =>
 
 const updateStatus = async (appointmentId, newStatus) => {
   try {
-    const res = await axiosInstance.patch(`/appointments/status/${appointmentId}`, {
+    const res = await axios.patch(`/appointments/${appointmentId}/cancel-by-doctor`, {
       status: newStatus,
     });
 
@@ -57,16 +75,16 @@ const updateStatus = async (appointmentId, newStatus) => {
     if (setAppointments) setAppointments(updatedList);
 
     if (newStatus === "cancelled") {
-      alert("Appointment cancelled and confirmation email sent.");
+      toast.success("Appointment cancelled and confirmation email sent.");
     } else {
-      alert(`Appointment status updated to ${newStatus}.`);
+      toast.success(`Appointment status updated to ${newStatus}.`);
     }
 
   } catch (error) {
     console.error("Failed to update appointment status", error);
     // Show proper error message if less than 1 hour
     if (error.response && error.response.data?.message) {
-      alert(error.response.data.message);
+      toast.error(error.response.data.message);
     } else {
       setLocalAppointments(updatedList);
       if (setAppointments) setAppointments(updatedList);
@@ -77,6 +95,39 @@ const updateStatus = async (appointmentId, newStatus) => {
   }
 };
 
+const handleDoctorCancel = async () => {
+  if (!cancelReason.trim()) {
+    toast.error("Please provide a cancellation reason.");
+    return;
+  }
+
+  try {
+    const res = await axiosInstance.patch(
+      `/appointments/${selectedAppointmentId}/cancel-by-doctor`,
+      { reason: cancelReason }
+    );
+
+    const updated = res.data.appointment;
+
+    const updatedList = appointments.map((appt) =>
+      appt._id === selectedAppointmentId ? updated : appt
+    );
+    setLocalAppointments(updatedList);
+    if (setAppointments) setAppointments(updatedList);
+
+    toast.success("Appointment cancelled and email sent.");
+  } catch (error) {
+    console.error("Error cancelling appointment:", error);
+    toast.error(
+      error?.response?.data?.message || "Failed to cancel appointment"
+    );
+  }
+
+  // Reset dialog
+  setCancelDialogOpen(false);
+  setCancelReason("");
+  setSelectedAppointmentId(null);
+};
 
 
   return (
@@ -131,7 +182,8 @@ const updateStatus = async (appointmentId, newStatus) => {
                     size="small"
                     variant="contained"
                     color="error"
-                    onClick={() => updateStatus(appt._id, "cancelled")}
+                    onClick={() => { setSelectedAppointmentId(appt._id);
+    setCancelDialogOpen(true);}}
                     disabled={appt.status === "cancelled"}
                   >
                     Cancel
@@ -150,6 +202,33 @@ const updateStatus = async (appointmentId, newStatus) => {
             </Grid>
           ))}
       </Grid>
+
+<Dialog open={cancelDialogOpen} onClose={() => setCancelDialogOpen(false)}>
+  <DialogTitle>Cancel Appointment</DialogTitle>
+  <DialogContent>
+    <TextField
+      autoFocus
+      margin="dense"
+      label="Reason for cancellation"
+      fullWidth
+      value={cancelReason}
+      onChange={(e) => setCancelReason(e.target.value)}
+    />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setCancelDialogOpen(false)}>Close</Button>
+    <Button
+      onClick={handleDoctorCancel}
+      variant="contained"
+      color="error"
+      disabled={!cancelReason.trim()}
+    >
+      Submit
+    </Button>
+  </DialogActions>
+</Dialog>
+
+
     </Box>
   );
 };
