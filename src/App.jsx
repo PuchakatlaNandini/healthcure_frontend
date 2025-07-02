@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-
+import { ToastContainer } from "react-toastify";
 // Components
 import Navbar from "./components/Navbar";
 import AppointmentList from "./components/appointmentList";
@@ -47,6 +47,7 @@ function App() {
           <Route path="/patient/login" element={<PatientLogin />} />
 
         </Routes>
+        <ToastContainer position="top-right" autoClose={3000}  />
       </Router>
     </LocalizationProvider>
   );

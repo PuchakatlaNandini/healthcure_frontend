@@ -22,6 +22,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ProfileUpload from "./profileUpload";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const specializations = [
     "Cardiology",
@@ -106,10 +107,10 @@ export default function DoctorProfile() {
                     "Content-Type": "multipart/form-data"
                 }
             });
-            alert("Profile submitted successfully!");
+            toast.success("Profile submitted successfully!");
             navigate("/dashboard");
         } catch (error) {
-            alert(error?.response?.data?.message || "Error submitting profile");
+            toast.error(error?.response?.data?.message || "Error submitting profile");
         }
     };
 

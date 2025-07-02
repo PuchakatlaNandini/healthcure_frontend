@@ -33,7 +33,7 @@ const ProfileUpload = ({ onCompleteSetup, onImageSelect }) => {
       onImageSelect(droppedFile);
       handlePreview(droppedFile);
     } else {
-      alert("File must be PNG/JPG and less than 2MB");
+      toast.error("File must be PNG/JPG and less than 2MB");
     }
   };
 

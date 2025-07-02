@@ -22,7 +22,7 @@ import {
 import LogoutIcon from '@mui/icons-material/Logout';
 import Dialog from "@mui/material/Dialog";
 import BookAppointment from "./BookAppointment";
-
+import { toast } from "react-toastify";
 
 
 const PatientDashboard = () => {
@@ -126,28 +126,28 @@ const PatientDashboard = () => {
     }
   };
 
-  const handleCancel = async (appointmentId) => {
-  try {
-    const res = await axiosInstance.patch(`/appointments/status/${appointmentId}`, {
-      status: "cancelled",
-    });
+  //   const handleCancel = async (appointmentId) => {
+  //   try {
+  //     const res = await axiosInstance.patch(`/appointments/status/${appointmentId}`, {
+  //       status: "cancelled",
+  //     });
 
-    const updated = res.data.appointment;
-    const updatedList = appointments.map((a) =>
-      a._id === appointmentId ? updated : a
-    );
+  //     const updated = res.data.appointment;
+  //     const updatedList = appointments.map((a) =>
+  //       a._id === appointmentId ? updated : a
+  //     );
 
-    setAppointments(updatedList);
+  //     setAppointments(updatedList);
 
-    // Ensure this state is defined
-    setCancelledAppointments(prev => [...prev, appointmentId]);
+  //     // Ensure this state is defined
+  //     setCancelledAppointments(prev => [...prev, appointmentId]);
 
-    alert("Appointment cancelled and confirmation email sent.");
-  } catch (error) {
-    console.error("Cancel error:", error?.response?.data || error.message);
-    alert(`Failed to cancel appointment: ${error?.response?.data?.message || error.message}`);
-  }
-};
+  //     toast.success("Appointment cancelled and confirmation email sent.");
+  //   } catch (error) {
+  //     console.error("Cancel error:", error?.response?.data || error.message);
+  //     toast.error(`Failed to cancel appointment: ${error?.response?.data?.message || error.message}`);
+  //   }
+  // };
 
 
 
@@ -170,48 +170,49 @@ const PatientDashboard = () => {
   };
 
   const submitCancellation = async () => {
-  try {
-    const res = await axiosInstance.patch(`/appointments/status/${appointmentToCancel}`, {
-      status: "cancelled",
-      reason: cancelReason,
-    });
+    try {
+      const res = await axiosInstance.patch(`/appointments/status/${appointmentToCancel}`, {
 
-    const updated = res.data.appointment;
-    const updatedList = appointments.map((a) =>
-      a._id === appointmentToCancel ? updated : a
-    );
-    setAppointments(updatedList);
-    setCancelledAppointments(prev => [...prev, appointmentToCancel]);
+        status: "cancelled",
+        reason: cancelReason.trim(),
+      });
 
-    setCancelReasonDialogOpen(false);
-    alert("Appointment cancelled with reason sent.");
-  } catch (error) {
-    console.error("Cancel error:", error);
-    alert("Failed to cancel appointment.");
-  }
-};
+      const updated = res.data.appointment;
+      const updatedList = appointments.map((a) =>
+        a._id === appointmentToCancel ? updated : a
+      );
+      setAppointments(updatedList);
+      setCancelledAppointments(prev => [...prev, appointmentToCancel]);
+
+      setCancelReasonDialogOpen(false);
+      toast.success("Appointment cancelled with reason sent.");
+    } catch (error) {
+      console.error("Cancel error:", error);
+      toast.error("Failed to cancel appointment.");
+    }
+  };
 
 
   return (
-   <Box sx={{ pt: 10, px: 4,width:'82%' }}>
+    <Box sx={{ pt: 10, px: 4, width: '82%' }}>
 
       {/* Header */}
       <Box
-  display="flex"
-  justifyContent="space-between"
-  alignItems="center"
-  py={2}
-  px={4}
-  sx={{
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1100,
-    backgroundColor: "#fff",
-    borderBottom: "1px solid #ccc",
-  }}
->
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        py={2}
+        px={4}
+        sx={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1100,
+          backgroundColor: "#fff",
+          borderBottom: "1px solid #ccc",
+        }}
+      >
 
         <img src={logo} alt="Logo" style={{ height: '40px', width: 'auto' }} />
         <Box display="flex" alignItems="center" gap={2}>
@@ -381,27 +382,27 @@ const PatientDashboard = () => {
                         <Divider sx={{ my: 1 }} />
                         <Stack direction="row" spacing={2}>
                           <Button
-  variant="contained"
-  color="error"
-  onClick={() => {
-    setAppointmentToCancel(appt._id);
-    setCancelReason("");
-    setCancelReasonDialogOpen(true);
-  }}
-  disabled={appt.status === "cancelled"}
-  sx={{ textTransform: "none" }}
->
-  Cancel
-</Button>
+                            variant="contained"
+                            color="error"
+                            onClick={() => {
+                              setAppointmentToCancel(appt._id);
+                              setCancelReason("");
+                              setCancelReasonDialogOpen(true);
+                            }}
+                            disabled={appt.status === "cancelled"}
+                            sx={{ textTransform: "none" }}
+                          >
+                            Cancel
+                          </Button>
 
-                           <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleReschedule(appt)}
-                    disabled={appt.status === "reschedule" || !cancelledAppointments.includes(appt._id)}
-                    >
-                       Reschedule
-                   </Button>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handleReschedule(appt)}
+                            disabled={appt.status === "reschedule" || !cancelledAppointments.includes(appt._id)}
+                          >
+                            Reschedule
+                          </Button>
                         </Stack>
                       </CardContent>
                     </Card>
@@ -426,23 +427,23 @@ const PatientDashboard = () => {
           }}
         />
       </Dialog>
-<Dialog open={cancelReasonDialogOpen} onClose={() => setCancelReasonDialogOpen(false)}>
-  <Box p={3} width={400}>
-    <Typography variant="h6" gutterBottom>Reason for Cancellation</Typography>
-    <TextField
-      fullWidth
-      multiline
-      minRows={3}
-      value={cancelReason}
-      onChange={(e) => setCancelReason(e.target.value)}
-      placeholder="Enter reason for cancelling..."
-    />
-    <Stack direction="row" justifyContent="flex-end" spacing={2} mt={2}>
-      <Button onClick={() => setCancelReasonDialogOpen(false)} variant="outlined">Cancel</Button>
-      <Button onClick={submitCancellation} variant="contained" disabled={!cancelReason.trim()}>Submit</Button>
-    </Stack>
-  </Box>
-</Dialog>
+      <Dialog open={cancelReasonDialogOpen} onClose={() => setCancelReasonDialogOpen(false)}>
+        <Box p={3} width={400}>
+          <Typography variant="h6" gutterBottom>Reason for Cancellation</Typography>
+          <TextField
+            fullWidth
+            multiline
+            minRows={3}
+            value={cancelReason}
+            onChange={(e) => setCancelReason(e.target.value)}
+            placeholder="Enter reason for cancelling..."
+          />
+          <Stack direction="row" justifyContent="flex-end" spacing={2} mt={2}>
+            <Button onClick={() => setCancelReasonDialogOpen(false)} variant="outlined">Cancel</Button>
+            <Button onClick={submitCancellation} variant="contained" disabled={!cancelReason.trim()}>Submit</Button>
+          </Stack>
+        </Box>
+      </Dialog>
 
     </Box >
   );

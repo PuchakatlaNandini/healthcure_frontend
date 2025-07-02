@@ -13,6 +13,7 @@ import {
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "../utils/axios";
+import { toast } from "react-toastify";
 
 export default function AvailabilitySlotManager({
   slots = [],
@@ -61,7 +62,7 @@ export default function AvailabilitySlotManager({
     if (!startTime || !endTime) return;
 
     if (isSlotBooked(startTime, endTime)) {
-      alert("This slot is already booked.");
+      toast.error("This slot is already booked.");
       return;
     }
 
@@ -90,9 +91,9 @@ export default function AvailabilitySlotManager({
         .filter((slot) => slot.start && slot.end)
         .map((slot) => `${slot.start}-${slot.end}`);
       await axios.put("/doctors/availability", { timeSlots: formattedSlots });
-      alert("Time slots saved!");
+      toast.success("Time slots saved!");
     } catch (err) {
-      alert("Error saving time slots");
+      toast.error("Error saving time slots");
     }
   };
 
