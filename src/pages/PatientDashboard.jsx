@@ -101,7 +101,7 @@ const PatientDashboard = () => {
   const handleSpecializationChange = (e) => {
     const specialization = e.target.value;
     setSelectedSpecialization(specialization);
-    if (specialization === "") {
+    if (specialization === "" || specialization === "All Specializations") {
       setFilteredDoctors(doctors);
     } else {
       const filtered = doctors.filter(
@@ -149,6 +149,7 @@ const PatientDashboard = () => {
   //   }
   // };
 
+  
 
 
   const handleReschedule = (appt) => {
@@ -265,7 +266,7 @@ const PatientDashboard = () => {
               fullWidth
               size="small"
             >
-              <MenuItem value="">All Specializations</MenuItem>
+              <MenuItem value="All Specializations">All Specializations</MenuItem>
               <MenuItem value="Cardiology">Cardiology</MenuItem>
               <MenuItem value="Dermatology">Dermatology</MenuItem>
               <MenuItem value="Dentist">Dentist</MenuItem>
@@ -351,7 +352,7 @@ const PatientDashboard = () => {
 
       {activeTab === "appointments" && (
         <Box my={4}>
-          <Typography variant="h5" gutterBottom>📅 My Appointments</Typography>
+          <Typography variant="h5" gutterBottom>My Appointments</Typography>
 
           <Grid container spacing={4} justifyContent="flex-start" alignItems="flex-start">
             {appointments.length === 0 ? (

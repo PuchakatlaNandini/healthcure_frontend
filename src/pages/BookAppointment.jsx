@@ -216,7 +216,7 @@ const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
             {selectedDate && availableSlots.length > 0 && (
               <Box>
                 <Typography variant="subtitle1" gutterBottom>Select Time Slot:</Typography>
-                <Stack direction="row" spacing={1} sx={{ display: "flex", flexWrap: "wrap", gap: 1, justifyContent: "flex-start" }}>
+                <Stack direction="row" spacing={1} sx={{ display: "flex", flexWrap: "wrap", gap: 1, justifyContent: "flex-start", }}>
                   {availableSlots.map((slot) => {
                     const isBooked = bookedSlots.includes(slot);
                     return (
@@ -227,6 +227,10 @@ const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
                         onClick={() => !isBooked && setSelectedSlot(slot)}
                         disabled={isBooked}
                         color={isBooked ? "inherit" : selectedSlot === slot ? "success" : "primary"}
+                        sx={{borderColor: isBooked ? '#f44336' : undefined,color: isBooked ? '#f44336' : undefined,
+                         '&.Mui-disabled': { borderColor: '#f44336',color: '#f44336',
+                           },
+                          }}
                       >
                         {slot}
                       </Button>
