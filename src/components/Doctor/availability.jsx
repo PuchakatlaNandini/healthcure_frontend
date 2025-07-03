@@ -8,7 +8,7 @@ import {
 import AvailabilitySlotManager from "./availabilitySlots";
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import dayjs from 'dayjs';
-import axios from '../utils/axios';
+import axios from '../../utils/axios'
 import { toast } from "react-toastify";
 
 export default function Availability({ onSaveSettings }) {

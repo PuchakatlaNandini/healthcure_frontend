@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import AppointmentList from "../components/appointmentList";
-import DoctorProfile from '../pages/doctorProfile';
-import Availability from "../components/availability";
+import AppointmentList from "./appointmentList";
+import DoctorProfile from './doctorProfile';
+import Availability from '../Doctor/availability'
 
 import { Box, Button, Stack } from "@mui/material";
-import DoctorNavbar from "../components/doctorNavbar";
-import axiosInstance from "../utils/axios";
+import DoctorNavbar from "./doctorNavbar";
+import axiosInstance from "../../utils/axios";
 
 
 export default function DoctorDashboard() {

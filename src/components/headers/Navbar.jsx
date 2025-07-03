@@ -3,8 +3,8 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import DoctorLogin from '../pages/doctorLogin';
-import PatientLogin from '../pages/PatientLogin';
+import DoctorLogin from '../Doctor/doctorLogin';
+import PatientLogin from '../Patient/PatientLogin';
 
 const Navbar = () => {
   const [showDoctorLogin, setShowDoctorLogin] = useState(false);

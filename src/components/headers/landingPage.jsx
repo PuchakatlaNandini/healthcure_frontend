@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box"
-import Navbar from "../components/Navbar"
+import Navbar from "../headers/Navbar";
 import Typography from "@mui/material/Typography"
-import '../styles/page.css';
+
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import SecurityIcon from '@mui/icons-material/Security';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';

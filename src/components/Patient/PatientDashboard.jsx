@@ -2,9 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import "../styles/PatientDashboard.css";
-import logo from '../../src/assets/images/image.png';
-import axiosInstance from "../utils/axios";
+import logo from "../../assets/images/image.png";
+import axiosInstance from "../../utils/axios";
 import {
   Box,
   Typography,
@@ -194,7 +193,7 @@ const PatientDashboard = () => {
 
 
   return (
-    <Box sx={{ pt: 10, px: 4, width: '82%' }}>
+    <Box sx={{ pt: 10, px: 4, }}>
 
       {/* Header */}
       <Box
@@ -226,13 +225,13 @@ const PatientDashboard = () => {
 
       {/* Tab Bar */}
       <Stack direction="row" spacing={2} justifyContent="flex-start" my={2} >
-        <Button sx={{ minWidth: 550, textTransform: "none" }}
+        <Button sx={{ minWidth: 640, textTransform: "none" }}
           variant={activeTab === "find" ? "contained" : "outlined"}
           onClick={() => setActiveTab("find")}
         >
           Find Doctors
         </Button>
-        <Button sx={{ minWidth: 550, textTransform: "none" }}
+        <Button sx={{ minWidth: 640, textTransform: "none" }}
           variant={activeTab === "appointments" ? "contained" : "outlined"}
           onClick={() => setActiveTab("appointments")}
         >
@@ -252,7 +251,7 @@ const PatientDashboard = () => {
             <TextField
               label="Search doctors by name"
               variant="outlined"
-              fullWidth
+             fullWidth
               size="small"
               value={searchTerm}
               onChange={handleSearchChange}
@@ -262,23 +261,26 @@ const PatientDashboard = () => {
               label="Specialization"
               value={selectedSpecialization}
               onChange={handleSpecializationChange}
-              fullWidth
+             fullWidth
               size="small"
             >
-              <MenuItem value="">All Specializations</MenuItem>
+              <MenuItem value="All Specializations">All Specializations</MenuItem>
               <MenuItem value="Cardiology">Cardiology</MenuItem>
               <MenuItem value="Dermatology">Dermatology</MenuItem>
               <MenuItem value="Dentist">Dentist</MenuItem>
-              <MenuItem value="Neurologist">Neurologist</MenuItem>
+              <MenuItem value="Neurology">Neurologist</MenuItem>
               <MenuItem value="Pediatrics">Pediatrics</MenuItem>
+                <MenuItem value="Psychiatry">Psychiatry</MenuItem>
+               <MenuItem value="General Physician">General Physician</MenuItem>
+
             </TextField>
           </Stack>
 
-          <Grid container spacing={4} display={'flex'} justifyContent="flex-start" alignItems="flex-start">
+          <Grid container spacing={3} display={'flex'} justifyContent="flex-start" alignItems="flex-start">
 
             {filteredDoctors.map((doc) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} >
-                <Card key={doc._id} sx={{ mb: 3, width: "100%", boxShadow: 3, borderRadius: 2, display: "flex", flexDirection: "column" }}>
+              <Grid item xs={12} sm={6} md={4 } lg={3} >
+                <Card key={doc._id} sx={{ mb: 3,  boxShadow: 3, borderRadius: 2, display: "flex", flexDirection: "column",border:'1px solid blue' }}>
                   <CardContent sx={{ display: "flex", alignItems: "center" }}>
                     {doc.hasImage ? (
                       <img
@@ -353,7 +355,7 @@ const PatientDashboard = () => {
         <Box my={4}>
           <Typography variant="h5" gutterBottom>📅 My Appointments</Typography>
 
-          <Grid container spacing={4} justifyContent="flex-start" alignItems="flex-start">
+          <Grid container spacing={4} justifyContent="flex-start" alignItems="flex-start" >
             {appointments.length === 0 ? (
               <Grid item xs={12}>
                 <Typography variant="body1" color="textSecondary" align="center">
@@ -362,10 +364,10 @@ const PatientDashboard = () => {
               </Grid>
             ) : (
               [...appointments]
-                .sort((a, b) => new Date(b.scheduledAt) - new Date(a.scheduledAt)) // Newest first
+                .sort((a, b) => new Date(b.scheduledAt) - new Date(a.scheduledAt)) 
                 .map((appt) => (
-                  <Grid item xs={12} sm={4} md={4} key={appt._id} sx={{ display: "inline", justifyContent: "center", width: "30%" }}>
-                    <Card sx={{ boxShadow: 3, borderRadius: 2, }}>
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={appt._id} >
+                    <Card sx={{width:295, boxShadow: 3, borderRadius: 2,border:'1px solid blue' }}>
                       <CardContent>
                         <Typography variant="h6" gutterBottom>
                           Doctor: {appt.doctorId?.name || "Unknown"}
