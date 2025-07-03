@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import {
   Grid,
@@ -18,7 +19,6 @@ import { toast } from "react-toastify";
 export default function AvailabilitySlotManager({
   slots = [],
   setSlots,
-  onSaveSettings,
   selectedDate,
   doctorId,
 }) {
@@ -59,10 +59,41 @@ export default function AvailabilitySlotManager({
   };
 
   const handleAddSlot = () => {
-    if (!startTime || !endTime) return;
+    if (!startTime || !endTime) {
+      toast.error("Start and End Time are required.");
+      return;
+    }
 
-    if (isSlotBooked(startTime, endTime)) {
-      toast.error("This slot is already booked.");
+    const start = new Date(`1970-01-01T${startTime}:00`);
+    const end = new Date(`1970-01-01T${endTime}:00`);
+    const diffMinutes = (end - start) / (1000 * 60);
+
+    if (end <= start) {
+      toast.error("End Time must be after Start Time.");
+      return;
+    }
+
+    if (diffMinutes !== 15) {
+      toast.error("Time slot must be exactly 15 minutes.");
+      return;
+    }
+
+    const duplicate = slots.some(
+      (slot) => slot.start === startTime && slot.end === endTime
+    );
+    if (duplicate) {
+      toast.error("This time slot is already added.");
+      return;
+    }
+
+    const overlaps = slots.some(
+      (slot) =>
+        (startTime >= slot.start && startTime < slot.end) ||
+        (endTime > slot.start && endTime <= slot.end) ||
+        (startTime <= slot.start && endTime >= slot.end)
+    );
+    if (overlaps) {
+      toast.error("This time slot overlaps with an existing slot.");
       return;
     }
 
@@ -75,14 +106,11 @@ export default function AvailabilitySlotManager({
     setSlots([...slots, newSlot]);
     setStartTime("");
     setEndTime("");
+    toast.success("Time slot added successfully!");
   };
 
   const handleDelete = (id) => {
     setSlots(slots.filter((slot) => slot.id !== id));
-  };
-
-  const handleSaveSettings = () => {
-    if (onSaveSettings) onSaveSettings();
   };
 
   const handleSaveTimeSlots = async () => {
@@ -107,8 +135,25 @@ export default function AvailabilitySlotManager({
             label="Start Time"
             size="small"
             value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
-            InputProps={{ startAdornment: <InputAdornment position="start"></InputAdornment> }}
+            onChange={(e) => {
+              const selectedStart = e.target.value;
+              setStartTime(selectedStart);
+
+              if (selectedStart) {
+                // Auto-set end time to 15 minutes later
+                const [hour, minute] = selectedStart.split(":").map(Number);
+                const end = new Date();
+                end.setHours(hour);
+                end.setMinutes(minute + 15);
+
+                const endHour = String(end.getHours()).padStart(2, "0");
+                const endMinute = String(end.getMinutes()).padStart(2, "0");
+                setEndTime(`${endHour}:${endMinute}`);
+              } else {
+                setEndTime("");
+              }
+            }}
+            InputProps={{ startAdornment: <InputAdornment position="start" /> }}
           />
         </Grid>
         <Grid item xs={12} md={4}>
@@ -119,7 +164,7 @@ export default function AvailabilitySlotManager({
             size="small"
             value={endTime}
             onChange={(e) => setEndTime(e.target.value)}
-            InputProps={{ startAdornment: <InputAdornment position="start"></InputAdornment> }}
+            InputProps={{ startAdornment: <InputAdornment position="start" /> }}
           />
         </Grid>
         <Grid item xs={12} md={4} textAlign="right">
@@ -174,14 +219,6 @@ export default function AvailabilitySlotManager({
           sx={{ mr: 2, textTransform: "none" }}
         >
           Save Time Slots
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSaveSettings}
-          sx={{ textTransform: "none" }}
-        >
-          Save Settings
         </Button>
       </Box>
     </Box>
