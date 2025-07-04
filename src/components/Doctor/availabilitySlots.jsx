@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import DeleteIcon from "@mui/icons-material/Delete";
-import axios from "../utils/axios";
+import axios from "../../utils/axios";
 import { toast } from "react-toastify";
 
 export default function AvailabilitySlotManager({

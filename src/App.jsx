@@ -3,24 +3,21 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { ToastContainer } from "react-toastify";
-// Components
-import Navbar from "./components/Navbar";
-import AppointmentList from "./components/appointmentList";
 
-// Pages - Doctor
-import LandingPage from "./pages/landingPage";
-import DoctorDashboard from "./pages/doctorDashboard";
-import DoctorProfile from "./pages/doctorProfile";
-import DoctorLogin from "./pages/doctorLogin";
-import DoctorRegister from "./pages/doctorRegister";
-import Availability from "./components/availability";
-import DoctorAppointmentsPage from "./pages/DoctorAppointmentPage";
+import LandingPage from "./components/headers/landingPage";
 
-// Pages - Patient
-import PatientDashboard from "./pages/PatientDashboard";
-import BookAppointment from "./pages/BookAppointment";
-import PatientRegister from "./pages/PatientRegister";
-import PatientLogin from "./pages/PatientLogin";
+import AppointmentList from "./components/Doctor/appointmentList";
+import DoctorDashboard from "./components/Doctor/doctorDashboard";
+import DoctorProfile from "./components/Doctor/doctorProfile";
+import DoctorLogin from "./components/Doctor/doctorLogin";
+import DoctorRegister from "./components/Doctor/doctorRegister";
+import Availability from "./components/Doctor/availability";
+import DoctorAppointmentsPage from "./components/Doctor/DoctorAppointmentPage";
+
+import PatientDashboard from "./components/Patient/PatientDashboard";
+import BookAppointment from "./components/Patient/BookAppointment";
+import PatientRegister from "./components/Patient/PatientRegister";
+import PatientLogin from "./components/Patient/PatientLogin";
 
 function App() {
   return (

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
     Box,
     Typography,
@@ -16,21 +16,25 @@ import {
     Phone,
     Business,
     MonetizationOn,
-    Password
+    Password,
 } from "@mui/icons-material";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ProfileUpload from "./profileUpload";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import IconButton from '@mui/material/IconButton';
 
 const specializations = [
     "Cardiology",
     "Dermatology",
     "Neurology",
+    "Dentist",
     "Pediatrics",
     "Psychiatry",
-    "General Medicine"
+    "General Physician"
 ];
 
 const consultationFees = [
@@ -64,7 +68,11 @@ export default function DoctorProfile() {
 
 
     const [selectedImage, setSelectedImage] = useState(null);
+    const [showPassword,setShowPassword]=useState(false);
 
+    const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+    }
 
     const handleChange = (e) => {
         setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -114,6 +122,33 @@ export default function DoctorProfile() {
         }
     };
 
+
+    const handleTimeInput = (e) => {
+    const { name, value } = e.target;
+    let input = value.toUpperCase();
+
+    input = input.replace(/[^0-9: AMP]/g, "");
+
+      if (input.length <= 2 && /^(AM|PM)/.test(input)) {
+        return;
+    }
+
+        const amPmMatch = input.match(/\b(AM|PM)\b/);
+    if (amPmMatch) {
+        input = input.substring(0, amPmMatch.index + 2);
+    }
+
+        if (input && !/^[0-9]/.test(input)) return;
+
+    setFormData((prev) => ({
+        ...prev,
+        [name]: input
+    }));
+};
+
+
+
+
     return (
         <Box sx={{ margin: { xs: 1, sm: 3, md: 5 }, textAlign: "flex-start", minHeight: "90vh" }}>
             {/* Header */}
@@ -157,7 +192,7 @@ export default function DoctorProfile() {
                                 name="name"
                                 value={formData.name}
                                 onChange={handleChange}
-                                defaultValue="Dr. John Smith"
+                                // defaultValue="Dr. John Smith"
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -197,6 +232,7 @@ export default function DoctorProfile() {
                                 value={formData.email}
                                 onChange={handleChange}
                                 defaultValue="doctor@example.com"
+                                required
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -213,15 +249,25 @@ export default function DoctorProfile() {
                                 fullWidth
                                 label="Password"
                                 name="password"
+                                type={showPassword ? "text" : "password"}
                                 value={formData.password}
                                 onChange={handleChange}
                                 defaultValue="12334"
+                                required
+                                autoComplete="new-password"
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
                                             <Password />
                                         </InputAdornment>
-                                    )
+                                    ),
+                                    endAdornment: (
+                <InputAdornment position="end">
+                    <IconButton onClick={togglePasswordVisibility} edge="end">
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                </InputAdornment>
+            )
                                 }}
                                 sx={{ fontSize: { xs: 12, sm: 14 } }}
                             />
@@ -255,6 +301,7 @@ export default function DoctorProfile() {
                                 onChange={handleChange}
                                 defaultValue="10"
                                 type="number"
+                               
                                 sx={{ fontSize: { xs: 12, sm: 14 } }}
                             />
                         </Grid>
@@ -268,6 +315,7 @@ export default function DoctorProfile() {
                                 value={formData.fee}
                                 onChange={handleChange}
                                 defaultValue="100"
+                                 required
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -293,6 +341,7 @@ export default function DoctorProfile() {
                                 value={formData.degrees}
                                 onChange={handleChange}
                                 defaultValue="MBBS, MD (Medicine), Fellowship in Cardiology"
+                                required
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -312,6 +361,7 @@ export default function DoctorProfile() {
                                 value={formData.address}
                                 onChange={handleChange}
                                 defaultValue="123 Medical Center, New York, NY 10001"
+                                 required
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -335,15 +385,17 @@ export default function DoctorProfile() {
                                             label="Available From"
                                             name="from"
                                             value={formData.from}
-                                            onChange={handleChange}
-                                            defaultValue="09:00 AM"
+                                            onChange={handleTimeInput}
+                                            placeholder="09:00 AM"
                                             InputProps={{
                                                 startAdornment: (
                                                     <InputAdornment position="start">
                                                         <AccessTimeIcon />
+                                                
                                                     </InputAdornment>
                                                 )
                                             }}
+                                            inputProps={{maxLength:8}}
                                             sx={{ fontSize: { xs: 12, sm: 14 } }}
                                         />
                                     </Grid>
@@ -353,7 +405,7 @@ export default function DoctorProfile() {
                                             label="Available To"
                                             name="to"
                                             value={formData.to}
-                                            onChange={handleChange}
+                                            onChange={handleTimeInput}
                                             defaultValue="10:00 PM"
                                             InputProps={{
                                                 startAdornment: (
@@ -362,6 +414,7 @@ export default function DoctorProfile() {
                                                     </InputAdornment>
                                                 )
                                             }}
+                                            inputProps={{maxLength:8}}
                                             sx={{ fontSize: { xs: 12, sm: 14 } }}
                                         />
                                     </Grid>

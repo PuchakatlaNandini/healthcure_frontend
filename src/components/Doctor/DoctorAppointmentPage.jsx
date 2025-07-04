@@ -2,36 +2,36 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
-  TextField
+  TextField,
+  Stack
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import axiosInstance from "../utils/axios";
+import axiosInstance from "../../utils/axios";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
-import DoctorNavBar from "../components/DoctorNavBar";
+import DoctorNavBar from "./doctorNavbar";
 
 const DoctorAppointmentsPage = () => {
   const [appointments, setAppointments] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(dayjs());
+ const [fromDate, setFromDate] = useState(dayjs().startOf('month'));
+  const [toDate, setToDate] = useState(dayjs().endOf('month'));
 
   const doctorId = localStorage.getItem("doctorId");
 
-  useEffect(() => {
+   useEffect(() => {
     const fetchAppointments = async () => {
-      if (!doctorId || !selectedDate) return;
+      if (!doctorId || !fromDate || !toDate) return;
 
       try {
-        const formattedDate = selectedDate.format("YYYY-MM-DD");
-        const res = await axiosInstance.get(`/appointments/booked-slots?doctorId=${doctorId}&date=${formattedDate}`);
-        const res2 = await axiosInstance.get(`/appointments/doctor/${doctorId}`);
+        const res = await axiosInstance.get(`/appointments/doctor/${doctorId}`);
+        const allAppointments = res.data;
 
-        const filtered = res2.data.filter((appt) => {
-          const apptDate = new Date(appt.scheduledAt);
-          return (
-            apptDate.toISOString().slice(0, 10) === formattedDate
-          );
+        const filtered = allAppointments.filter((appt) => {
+          const apptDate = dayjs(appt.scheduledAt);
+          return apptDate.isAfter(fromDate.startOf("day").subtract(1, 'second')) &&
+                 apptDate.isBefore(toDate.endOf("day").add(1, 'second'));
         });
 
         setAppointments(filtered);
@@ -41,7 +41,7 @@ const DoctorAppointmentsPage = () => {
     };
 
     fetchAppointments();
-  }, [doctorId, selectedDate]);
+  }, [doctorId, fromDate, toDate]);
 
   const columns = [
     { field: "id", headerName: "ID", width: 200, sortable: false, filterable: false },
@@ -53,7 +53,10 @@ const DoctorAppointmentsPage = () => {
     // { field: "notes", headerName: "Notes", width: 220,sortable:false,filterable:false },
   ];
 
-  const rows = appointments.map((appt, i) => {
+  const rows = appointments
+  .slice()
+  .sort((a,b)=>new Date(a. scheduledAt) - new Date(b.scheduledAt))
+  .map((appt, i) => {
     const date = new Date(appt.scheduledAt);
     return {
       id: i + 1,
@@ -78,15 +81,22 @@ const DoctorAppointmentsPage = () => {
         </Typography>
 
         <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mb={2} mt={3}>
           <DatePicker
             sx={{ mb: 2 }}
-            label="Select Date"
-            value={selectedDate}
-            onChange={(newDate) => setSelectedDate(newDate)}
-            renderInput={(params) => (
-              <TextField {...params} sx={{ mb: 2, width: 300 }} />
-            )}
-          />
+            label="From Date"
+            value={fromDate}
+            onChange={(newVal) => setFromDate(newVal)}
+           slotProps={{ textField: { width:100 } }} />
+           
+           <DatePicker
+            sx={{ mb: 2 }}
+            label="To Date"
+            value={toDate}
+            onChange={(newVal) => setToDate(newVal)}
+           slotProps={{ textField: { width:100 } }} />
+           
+          </Stack>
         </LocalizationProvider>
 
         <Box sx={{ width: "100%" }}>

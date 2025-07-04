@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
-import axiosInstance from "../utils/axios";
+import axiosInstance from "../../utils/axios";
 import { toast } from "react-toastify";
 import {
   Dialog,
@@ -125,7 +125,7 @@ const handleDoctorCancel = async () => {
 
 
   return (
-    <Box sx={{ p: 3, maxWidth: 900, }}>
+    <Box sx={{ p: 3,  }}>
       <Typography variant="h5" gutterBottom sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
         <EventAvailableIcon />
         Today's Appointments
@@ -137,15 +137,15 @@ const handleDoctorCancel = async () => {
       <Grid container spacing={2} sx={{ mt: 2, mb: 4 }} justifyContent="flex-start">
         {[...appointments]
           .sort((a, b) => new Date(b.scheduledAt) - new Date(a.scheduledAt)).map((appt) => (
-            <Grid item xs={12} sm={6} md={4} key={appt._id}>
+            <Grid item xs={12} sm={6} md={4} lg={3} key={appt._id}>
               <Paper
                 key={appt._id}
                 elevation={appt.status === "Pending" ? 1 : 0}
                 sx={{
                   p: 2,
                   my: 2,
-
-                  border: "1px solid #e0e0e0",
+                  width:270,
+                  border: "1px solid lightblue",
                   backgroundColor: appt.status === "Pending" ? "#f9f9f9" : "#fff",
                   borderRadius: 2,
                 }}

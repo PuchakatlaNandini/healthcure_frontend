@@ -14,7 +14,6 @@ import {
 import {
   FaStar,
   FaUserMd,
-  FaMapMarkerAlt,
   FaVideo,
   FaClinicMedical,
 } from "react-icons/fa";
