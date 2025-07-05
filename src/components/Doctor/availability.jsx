@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import {
     Typography,
     Grid,
     Button,
     TextField,
-    Box
+    CircularProgress
 } from "@mui/material";
 
 import AvailabilitySlotManager from "./availabilitySlots";
@@ -15,8 +16,41 @@ import axios from "../../utils/axios"
 export default function Availability({ onSaveSettings }) {
     const [fromDate, setFromDate] = useState("");
     const [toDate, setToDate] = useState("");
-    const [dateRange, setDateRange] = useState([]); 
+    const [dateRange, setDateRange] = useState([]);
     const [slots, setSlots] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const doctorId = localStorage.getItem("doctorId"); 
+
+    useEffect(() => {
+        const fetchAvailability = async () => {
+            try {
+                const response = await axios.get(`/doctors/availability/${doctorId}`);
+                const { availability, timeSlots } = response.data;
+
+                if (availability?.length > 0) {
+                    setDateRange(availability);
+                    setFromDate(availability[0]);
+                    setToDate(availability[availability.length - 1]);
+                }
+
+                if (timeSlots?.length > 0) {
+                    const formattedSlots = timeSlots.map((slot, index) => {
+                        const [start, end] = slot.split("-");
+                        return { id: index + 1, start, end };
+                    });
+                    setSlots(formattedSlots);
+                }
+            } catch (error) {
+                console.error("Error fetching availability:", error);
+                toast.error("Failed to load availability");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAvailability();
+    }, [doctorId]);
 
     const generateDateRange = (start, end) => {
         const startDay = dayjs(start);
@@ -41,9 +75,14 @@ export default function Availability({ onSaveSettings }) {
         setDateRange(generatedDates);
 
         try {
-            await axios.put("/doctors/availability", { dates: generatedDates });
+            await axios.put("/doctors/availability", {
+                doctorId,
+                dates: generatedDates,
+                timeSlots: slots.map(s => `${s.start}-${s.end}`)
+            });
             toast.success("Availability saved!");
         } catch (err) {
+            console.error("Error saving availability:", err);
             toast.error("Error saving availability");
         }
     };
@@ -52,6 +91,14 @@ export default function Availability({ onSaveSettings }) {
         const updatedDates = dateRange.filter(d => d !== date);
         setDateRange(updatedDates);
     };
+
+    if (loading) {
+        return (
+            <Grid container justifyContent="center" alignItems="center" sx={{ height: "70vh" }}>
+                <CircularProgress color="primary" />
+            </Grid>
+        );
+    }
 
     return (
         <Box sx={{ width: "100%", px: { xs: 1, sm: 2, md: 3 } }}>
@@ -63,14 +110,13 @@ export default function Availability({ onSaveSettings }) {
             spacing={4}
             // sx={{ ml: 3, width: { xs: "100%", sm: 800, md: 1200 } }}
         >
-            {/* Date Range */}
             <Grid item xs={12} md={6}>
                 <Typography variant="h5" sx={{ fontWeight: "bold" }}>Availability Settings</Typography>
                 <Typography variant="subtitle1">Set your working date range and manage appointment slots</Typography>
 
-                <Typography variant="h5" sx={{ mt: 3,mb:3 }}>Select Date Range</Typography>
+                <Typography variant="h5" sx={{ mt: 3, mb: 3 }}>Select Date Range</Typography>
 
-                <Grid container spacing={2} sx={{ mt: 1 , }}>
+                <Grid container spacing={2} sx={{ mt: 1 }}>
                     <Grid item xs={6}>
                         <TextField
                             fullWidth
@@ -97,16 +143,14 @@ export default function Availability({ onSaveSettings }) {
                     </Grid>
                 </Grid>
 
-                {/* Show selected date range */}
                 {dateRange.length > 0 && (
-                    <Grid container spacing={1} sx={{ mt: 2 ,width: "40%",  gap: 1 }}>
+                    <Grid container spacing={1} sx={{ mt: 2, width: "40%", gap: 1}}>
                         {dateRange.map(date => (
                             <Grid item key={date}>
                                 <Button
                                     variant="outlined"
                                     color="primary"
                                     onClick={() => handleRemoveDate(date)}
-                                   
                                 >
                                     {date} &times;
                                 </Button>
@@ -125,15 +169,15 @@ export default function Availability({ onSaveSettings }) {
                 </Button>
             </Grid>
 
-            {/* Time Slots */}
-            <Grid item xs={12} md={6} alignItems={"stretch"} sx={{ display: "flex", flexDirection: "column" }}>
-                <Typography variant="h5" sx={{ mb: 2, ml: { xs: 0, sm: 1 } }}>
+            <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
+                <Typography variant="h5" sx={{ mt: 10, ml: 3 }}>
                     Available Timeslots
                 </Typography>
                 <AvailabilitySlotManager
                     slots={slots}
                     setSlots={setSlots}
-                    onSaveSettings={onSaveSettings}
+                    selectedDate={fromDate}
+                    doctorId={doctorId}
                 />
             </Grid>
         </Grid>
