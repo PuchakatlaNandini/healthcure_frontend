@@ -11,7 +11,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
-import DoctorNavBar from "./doctorNavbar";
+import DoctorNavBar from "../Doctor/doctorNavbar"
 
 const DoctorAppointmentsPage = () => {
   const [appointments, setAppointments] = useState([]);
@@ -44,12 +44,12 @@ const DoctorAppointmentsPage = () => {
   }, [doctorId, fromDate, toDate]);
 
   const columns = [
-    { field: "id", headerName: "ID", width: 200, sortable: false, filterable: false },
-    { field: "patientName", headerName: "Patient", width: 200, sortable: false, filterable: false },
-    { field: "date", headerName: "Date", width: 200, sortable: false, filterable: false },
-    { field: "time", headerName: "Time", width: 200, sortable: false, filterable: false },
-    { field: "type", headerName: "Consultation", width: 200, sortable: false, filterable: false },
-    { field: "status", headerName: "Status", width: 200, sortable: false, filterable: false, },
+    { field: "id", headerName: "ID", minwidth: 200, sortable: false, filterable: false ,flex:0.5},
+    { field: "patientName", headerName: "Patient",minwidth: 200, sortable: false, filterable: false ,flex:1},
+    { field: "date", headerName: "Date", minwidth: 200, sortable: false, filterable: false ,flex:1},
+    { field: "time", headerName: "Time", minwidth: 200, sortable: false, filterable: false,flex:1 },
+    { field: "type", headerName: "Consultation", minwidth: 200, sortable: false, filterable: false,flex:1 },
+    { field: "status", headerName: "Status", minwidth: 200, sortable: false, filterable: false,flex:1 },
     // { field: "notes", headerName: "Notes", width: 220,sortable:false,filterable:false },
   ];
 
@@ -81,25 +81,28 @@ const DoctorAppointmentsPage = () => {
         </Typography>
 
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mb={2} mt={3}>
-          <DatePicker
-            sx={{ mb: 2 }}
-            label="From Date"
-            value={fromDate}
-            onChange={(newVal) => setFromDate(newVal)}
-           slotProps={{ textField: { width:100 } }} />
-           
-           <DatePicker
-            sx={{ mb: 2 }}
-            label="To Date"
-            value={toDate}
-            onChange={(newVal) => setToDate(newVal)}
-           slotProps={{ textField: { width:100 } }} />
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mb={2} mt={3}  sx={{ maxWidth: "100%", flexWrap: "wrap" }}>
+          <Box sx={{ minWidth: 200, maxWidth: 250, flex: 1 }}>
+    <DatePicker
+      label="From Date"
+      value={fromDate}
+      onChange={(newVal) => setFromDate(newVal)}
+      slotProps={{ textField: { fullWidth: true, size: "small" } }}
+    />
+  </Box>
+  <Box sx={{ minWidth: 200, maxWidth: 250, flex: 1 }}>
+    <DatePicker
+      label="To Date"
+      value={toDate}
+      onChange={(newVal) => setToDate(newVal)}
+      slotProps={{ textField: { fullWidth: true, size: "small" } }}
+    />
+  </Box>
            
           </Stack>
         </LocalizationProvider>
 
-        <Box sx={{ width: "100%" }}>
+        <Box sx={{ width: "100%",overflowX:"auto" }}>
           <DataGrid autoHeight rows={rows} columns={columns} pageSize={5}
             rowHeight={50}
             pageSizeOptions={[5]}
@@ -109,6 +112,7 @@ const DoctorAppointmentsPage = () => {
               },
             }}
             sx={{
+              minWidth:"600px",
               "& .MuiDataGrid-root": {
                 border: "none",
               },

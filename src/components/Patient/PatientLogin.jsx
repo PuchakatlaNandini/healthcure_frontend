@@ -57,13 +57,14 @@ const PatientLogin = ({ onClose }) => {
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         zIndex: 9999,
+        px:2
       }}
     >
       <Paper
         elevation={3}
         sx={{
-          p: 4,
-          width: '90%',
+          p: { xs: 3, sm: 4 },
+          width: '100%',
           maxWidth: 400,
           position: 'relative',
           textAlign: 'center',

@@ -17,6 +17,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import LogoutIcon from "@mui/icons-material/Logout";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import { useNavigate } from "react-router-dom";
+import SettingsIcon from "@mui/icons-material/Settings";
+
 
 const DoctorNavbar = () => {
   const navigate = useNavigate();
@@ -53,6 +55,11 @@ const DoctorNavbar = () => {
     handleDialogClose();
     navigate("/doctor/appointments");
   };
+
+  const handleProfileForm = () => {
+  handleDialogClose();
+  navigate("/doctor/profile");
+};
   const doctorImage = localStorage.getItem("doctorImage");
 
   return (
@@ -126,6 +133,18 @@ const DoctorNavbar = () => {
             <EventAvailableIcon fontSize="small" />
             <Typography fontSize={14}>My Appointments</Typography>
           </Box>
+
+<Box
+  display="flex"
+  alignItems="center"
+  gap={1}
+  sx={{ cursor: "pointer", mb: 2 }}
+  onClick={handleProfileForm}
+>
+  <SettingsIcon fontSize="small" />
+  <Typography fontSize={14}>Profile Settings</Typography>
+</Box>
+
 
           <Button
             fullWidth

@@ -7,7 +7,8 @@ import {
     TextField,
     MenuItem,
     Button,
-    InputAdornment
+    InputAdornment,
+    Container
 } from "@mui/material";
 import {
     Person,
@@ -146,11 +147,59 @@ export default function DoctorProfile() {
     }));
 };
 
+//autofill
+useEffect(() => {
+    const fetchDoctorProfile = async () => {
+        const token = localStorage.getItem("token");
+        const doctorId = localStorage.getItem("doctorId"); 
+        
+        if (!doctorId || !token) return;
+
+        try {
+            const response = await axios.get(`http://localhost:5000/api/doctors/${doctorId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const data = response.data;
+
+            setFormData({
+                name: data.name || "",
+                email: data.email || "",
+                password: "",
+                phone: data.phone || "",
+                specialization: data.specialization || "",
+                experience: data.experience || "",
+                fee: data.fee || "",
+                degrees: data.degrees || "",
+                address: data.address || "",
+                from: data.from || "",
+                to: data.to || "",
+                bio: data.bio || "",
+            });
+
+            if (data.image && data.image.data) {
+                const imgSrc = `data:${data.image.contentType};base64,${btoa(
+                    new Uint8Array(data.image.data.data).reduce((data, byte) => data + String.fromCharCode(byte), '')
+                )}`;
+                setSelectedImage(data.image.data);
+                localStorage.setItem("doctorImage", imgSrc);
+            }
+        } catch (error) {
+            console.error("Error fetching doctor profile:", error);
+            toast.error("Failed to load profile");
+        }
+    };
+
+    fetchDoctorProfile();
+}, []);
 
 
 
     return (
-        <Box sx={{ margin: { xs: 1, sm: 3, md: 5 }, textAlign: "flex-start", minHeight: "90vh" }}>
+        <Container maxWidth="md">
+                    <Box sx={{ py:4, textAlign: "flex-start", minHeight: "90vh" }}>
             {/* Header */}
             <Typography variant="h5" fontWeight="bold" gutterBottom>
                 Complete Your Doctor Profile
@@ -182,7 +231,7 @@ export default function DoctorProfile() {
                     Please provide accurate information to build trust with patients
                 </Typography>
 
-                <Box component="form" noValidate sx={{ mt: 3, width: '100%' }}>
+                <Box component="form" noValidate sx={{ mt: 3,  }}>
                     <Grid container spacing={2}>
                         {/* Full Name */}
                         <Grid item xs={12} sm={6} size={6}>
@@ -463,5 +512,6 @@ export default function DoctorProfile() {
                 </Box>
             </Paper>
         </Box>
+        </Container>
     );
 }

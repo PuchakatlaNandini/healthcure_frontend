@@ -118,8 +118,8 @@ const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
   };
 
   return (
-    <Box p={4} >
-      <Typography variant="h4" display="flex" justifyContent="flex-start" gutterBottom>
+    <Box p={{ xs: 2, sm: 4 }} >
+      <Typography variant="h4" display="flex" justifyContent="flex-start" gutterBottom  fontSize={{ xs: "1.5rem", sm: "2rem" }}>
         Book Appointment
       </Typography>
 
@@ -135,10 +135,10 @@ const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
         <CloseIcon />
       </IconButton>
 
-      <Grid container spacing={4} direction="row" alignContent="flex-start" justifyContent="flex-start">
+      <Grid container spacing={4} direction={{ xs: "column", md: "row" }} alignContent="flex-start" justifyContent="flex-start" alignItems={"stretch"}>
         {/* Doctor Info */}
         <Grid item xs={12} md={6} textAlign="center">
-          <Paper elevation={3} sx={{ p: 3 }}>
+          <Paper elevation={3} sx={{ p: { xs: 2, sm: 3 }, height: "100%" }}>
             <Stack spacing={1} alignItems="center">
               <Avatar
                 src={doctor?.image || "https://via.placeholder.com/150"}
@@ -153,7 +153,7 @@ const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
                     ? doctor.degrees.split(',').map(d => d.trim())
                     : []
                 ).map((deg, idx) => (
-                  <Typography key={idx} variant="caption" sx={{ border: "1px solid #ccc", borderRadius: 1, px: 1 }}>{deg}</Typography>
+                  <Typography key={idx} variant="caption" sx={{ border: "1px solid #ccc", borderRadius: 1, px: 1,mb:1 }}>{deg}</Typography>
                 ))}
               </Stack>
               <Typography><FaUserMd /> {doctor?.experience} years experience</Typography>
@@ -166,15 +166,15 @@ const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
 
         {/* Booking Form */}
         <Grid item xs={12} md={6} textAlign="center" maxWidth={"60%"}>
-          <Paper elevation={3} sx={{ p: 3 }}>
+          <Paper elevation={3} sx={{ p: { xs: 2, sm: 3 } }}>
             <Typography variant="h6" gutterBottom>Book Your Appointment</Typography>
             <Typography variant="body2" mb={2}>Choose date, time and consultation type</Typography>
 
-            <Stack direction="row" spacing={2} mb={2} justifyContent="center">
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mb={2} justifyContent="center">
               {["In-Person", "Online"].map((type) => (
                 <Button
                   key={type}
-                  sx={{ minWidth: 200, height: 30 }}
+                  sx={{ minWidth: 160,  }}
                   variant={consultationType === type ? "contained" : "outlined"}
                   color={type === "In-Person" ? "secondary" : "primary"}
                   onClick={() => {
@@ -199,12 +199,9 @@ const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
                 disablePast
                 slotProps={{
                   textField: {
-                    fullWidth: false,
+                    fullWidth: true,
                     size: "small",
-                    sx: {
-                      width: "200px",
-                      fontSize: "14px",
-                    },
+                   
                   },
                 }}
               />

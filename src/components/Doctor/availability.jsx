@@ -3,24 +3,19 @@ import {
     Typography,
     Grid,
     Button,
-    TextField
+    TextField,
+    Box
 } from "@mui/material";
 
 import AvailabilitySlotManager from "./availabilitySlots";
-<<<<<<< HEAD:src/components/Doctor/availability.jsx
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import dayjs from 'dayjs';
-import axios from '../../utils/axios'
-=======
 import dayjs from "dayjs";
-import axios from "../utils/axios";
->>>>>>> ec4884e3b38cce34c11ebc42cbb582945a950d33:src/components/availability.jsx
-import { toast } from "react-toastify";
+import axios from "../../utils/axios"
+    import { toast } from "react-toastify";
 
 export default function Availability({ onSaveSettings }) {
     const [fromDate, setFromDate] = useState("");
     const [toDate, setToDate] = useState("");
-    const [dateRange, setDateRange] = useState([]); // All dates in range
+    const [dateRange, setDateRange] = useState([]); 
     const [slots, setSlots] = useState([]);
 
     const generateDateRange = (start, end) => {
@@ -59,13 +54,14 @@ export default function Availability({ onSaveSettings }) {
     };
 
     return (
+        <Box sx={{ width: "100%", px: { xs: 1, sm: 2, md: 3 } }}>
         <Grid
             container
-            direction="row"
+            direction={{ xs: "column", md: "row" }}
             justifyContent="flex-start"
             alignItems="stretch"
             spacing={4}
-            sx={{ ml: 3, width: { xs: "100%", sm: 800, md: 1200 } }}
+            // sx={{ ml: 3, width: { xs: "100%", sm: 800, md: 1200 } }}
         >
             {/* Date Range */}
             <Grid item xs={12} md={6}>
@@ -131,7 +127,7 @@ export default function Availability({ onSaveSettings }) {
 
             {/* Time Slots */}
             <Grid item xs={12} md={6} alignItems={"stretch"} sx={{ display: "flex", flexDirection: "column" }}>
-                <Typography variant="h5" sx={{ mt: 10, ml: 3,  }}>
+                <Typography variant="h5" sx={{ mb: 2, ml: { xs: 0, sm: 1 } }}>
                     Available Timeslots
                 </Typography>
                 <AvailabilitySlotManager
@@ -141,5 +137,6 @@ export default function Availability({ onSaveSettings }) {
                 />
             </Grid>
         </Grid>
+        </Box>
     );
 }

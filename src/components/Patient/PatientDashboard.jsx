@@ -194,7 +194,7 @@ const PatientDashboard = () => {
 
 
   return (
-    <Box sx={{ pt: 10, px: 4, }}>
+    <Box sx={{ pt: 10, px:{xs:2,sm:3,md:4} }}>
 
       {/* Header */}
       <Box
@@ -225,20 +225,41 @@ const PatientDashboard = () => {
       </Box>
 
       {/* Tab Bar */}
-      <Stack direction="row" spacing={2} justifyContent="flex-start" my={2} >
-        <Button sx={{ minWidth: 640, textTransform: "none" }}
-          variant={activeTab === "find" ? "contained" : "outlined"}
-          onClick={() => setActiveTab("find")}
-        >
-          Find Doctors
-        </Button>
-        <Button sx={{ minWidth: 640, textTransform: "none" }}
-          variant={activeTab === "appointments" ? "contained" : "outlined"}
-          onClick={() => setActiveTab("appointments")}
-        >
-          My Appointments
-        </Button>
-      </Stack>
+      <Stack
+  direction={{ xs: "column", sm: "row" }}
+  spacing={2}
+  justifyContent="flex-start"
+  alignItems="stretch"
+  my={2}
+  sx={{ maxWidth: "100%" }}
+>
+  <Button
+    fullWidth
+    sx={{
+      maxWidth: { xs: "100%", sm: 300, md: 350 },
+      textTransform: "none",
+      flex: 1,
+    }}
+    variant={activeTab === "find" ? "contained" : "outlined"}
+    onClick={() => setActiveTab("find")}
+  >
+    Find Doctors
+  </Button>
+
+  <Button
+    fullWidth
+    sx={{
+      maxWidth: { xs: "100%", sm: 300, md: 350 },
+      textTransform: "none",
+      flex: 1,
+    }}
+    variant={activeTab === "appointments" ? "contained" : "outlined"}
+    onClick={() => setActiveTab("appointments")}
+  >
+    My Appointments
+  </Button>
+</Stack>
+
 
       {/* Content */}
       {activeTab === "find" && (
@@ -280,16 +301,16 @@ const PatientDashboard = () => {
           <Grid container spacing={3} display={'flex'} justifyContent="flex-start" alignItems="flex-start">
 
             {filteredDoctors.map((doc) => (
-              <Grid item xs={12} sm={6} md={4 } lg={3} >
-                <Card key={doc._id} sx={{ mb: 3,  boxShadow: 3, borderRadius: 2, display: "flex", flexDirection: "column",border:'1px solid blue' }}>
+              <Grid item xs={12} sm={6} md={4 } lg={3} key={doc._id}  >
+                <Card sx={{ mb: 3,  boxShadow: 3, borderRadius: 2, display: "flex", flexDirection: "column",border:'1px solid blue' }}>
                   <CardContent sx={{ display: "flex", alignItems: "center" }}>
                     {doc.hasImage ? (
                       <img
                         src={`http://localhost:5000/api/doctor/${doc._id}/image`}
                         alt={doc.name}
                         style={{
-                          width: 100,
-                          height: 100,
+                          width: 80,
+                          height: 80,
                           borderRadius: "50%",
                           marginRight: 16,
                         }}
@@ -368,7 +389,7 @@ const PatientDashboard = () => {
                 .sort((a, b) => new Date(b.scheduledAt) - new Date(a.scheduledAt)) 
                 .map((appt) => (
                   <Grid item xs={12} sm={6} md={4} lg={3} key={appt._id} >
-                    <Card sx={{width:295, boxShadow: 3, borderRadius: 2,border:'1px solid blue' }}>
+                    <Card sx={{ width: "100%", minWidth: "260px", maxWidth: "100%", boxShadow: 3, borderRadius: 2,border:'1px solid blue' }}>
                       <CardContent>
                         <Typography variant="h6" gutterBottom>
                           Doctor: {appt.doctorId?.name || "Unknown"}
@@ -383,7 +404,7 @@ const PatientDashboard = () => {
                           Status: {appt.status || "Unknown"}
                         </Typography>
                         <Divider sx={{ my: 1 }} />
-                        <Stack direction="row" spacing={2}>
+                        <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                           <Button
                             variant="contained"
                             color="error"
@@ -431,7 +452,7 @@ const PatientDashboard = () => {
         />
       </Dialog>
       <Dialog open={cancelReasonDialogOpen} onClose={() => setCancelReasonDialogOpen(false)}>
-        <Box p={3} width={400}>
+        <Box p={3}  sx={{ width: { xs: '90vw', sm: 400 } }}>
           <Typography variant="h6" gutterBottom>Reason for Cancellation</Typography>
           <TextField
             fullWidth
