@@ -17,8 +17,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import LogoutIcon from "@mui/icons-material/Logout";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import { useNavigate } from "react-router-dom";
+import SettingsIcon from "@mui/icons-material/Settings";
+import axiosInstance from "../../utils/axios";
+
 
 const DoctorNavbar = () => {
+  const doctorId = localStorage.getItem("doctorId");
+
   const navigate = useNavigate();
   const doctorName = localStorage.getItem("doctorName") || "Doctor";
   const doctorRole = "Doctor";
@@ -53,13 +58,42 @@ const DoctorNavbar = () => {
     handleDialogClose();
     navigate("/doctor/appointments");
   };
+
+  const handleProfileForm = () => {
+    handleDialogClose();
+    navigate("/doctor/profile");
+  };
   const doctorImage = localStorage.getItem("doctorImage");
+  const [doctor, setDoctor] = useState(null);
+
+  useEffect(() => {
+    const fetchDoctor = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const res = await axiosInstance.get(`/doctors/${doctorId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log("Doctor fetched from backend:", res.data);
+        setDoctor(res.data);
+      } catch (err) {
+        console.error("Error fetching doctor details:", err);
+      }
+    };
+
+    if (doctorId) fetchDoctor();
+  }, [doctorId]);
+
 
   return (
     <Box sx={{ borderBottom: "1px solid black", backgroundColor: "#fff", position: "fixed", top: 0, zIndex: 1000, width: "100vw" }}>
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", px: 3, py: 1 }}>
+        <Box sx={{cursor:"pointer"}}
+        onClick={()=>navigate('/dashboard')}>
         <img src="../images/image.png" alt="Healthcure" style={{ width: 250, maxWidth: "30vw", height: "auto" }} />
-
+</Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Typography variant="subtitle2" sx={{ fontSize: { xs: 12, sm: 16 } }}>
             Welcome {doctorName}
@@ -99,7 +133,6 @@ const DoctorNavbar = () => {
         }}
       >
         <Box sx={{ position: "relative", p: 2 }}>
-          {/* Close Icon */}
           <IconButton
             onClick={handleDialogClose}
             size="small"
@@ -108,15 +141,16 @@ const DoctorNavbar = () => {
             <CloseIcon fontSize="small" />
           </IconButton>
 
-          {/* Profile Info */}
+          {/* profile */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
             <Avatar
               src={doctorImage || "https://cdn-icons-png.flaticon.com/512/4140/4140037.png"}
               sx={{ width: 56, height: 56 }}
             />
             <Box>
-              <Typography fontWeight="bold">{doctorName}</Typography>
-              <Typography fontSize={14} color="gray">{doctorRole}</Typography>
+              <Typography variant="h6">{doctor?.name}</Typography>
+              <Typography variant="subtitle2">{doctor?.specialization}</Typography>
+
             </Box>
           </Box>
 
@@ -126,6 +160,18 @@ const DoctorNavbar = () => {
             <EventAvailableIcon fontSize="small" />
             <Typography fontSize={14}>My Appointments</Typography>
           </Box>
+
+          <Box
+            display="flex"
+            alignItems="center"
+            gap={1}
+            sx={{ cursor: "pointer", mb: 2 }}
+            onClick={handleProfileForm}
+          >
+            <SettingsIcon fontSize="small" />
+            <Typography fontSize={14}>Profile Settings</Typography>
+          </Box>
+
 
           <Button
             fullWidth

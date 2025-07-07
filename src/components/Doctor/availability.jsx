@@ -5,13 +5,13 @@ import {
     Grid,
     Button,
     TextField,
-    CircularProgress
+    CircularProgress,
+    Box
 } from "@mui/material";
 
 import AvailabilitySlotManager from "./availabilitySlots";
-
-import dayjs from 'dayjs';
-import axios from "../../utils/axios";
+import dayjs from "dayjs";
+import axios from "../../utils/axios"
 import { toast } from "react-toastify";
 
 export default function Availability({ onSaveSettings }) {
@@ -21,7 +21,7 @@ export default function Availability({ onSaveSettings }) {
     const [slots, setSlots] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const doctorId = localStorage.getItem("doctorId"); 
+    const doctorId = localStorage.getItem("doctorId");
 
     useEffect(() => {
         const fetchAvailability = async () => {
@@ -102,84 +102,85 @@ export default function Availability({ onSaveSettings }) {
     }
 
     return (
-        <Grid
-            container
-            direction="row"
-            justifyContent="flex-start"
-            alignItems="stretch"
-            spacing={4}
-            sx={{ ml: 3, width: { xs: "100%", sm: 800, md: 1200 } }}
-        >
-            <Grid item xs={12} md={6}>
-                <Typography variant="h5" sx={{ fontWeight: "bold" }}>Availability Settings</Typography>
-                <Typography variant="subtitle1">Set your working date range and manage appointment slots</Typography>
+        <Box sx={{ maxWidth: "100%", px: { xs: 1, sm: 2, md: 3 }, overflowX: "hidden" }}>
+            <Grid
+                container
+                direction={{ xs: "column", md: "row" }}
+                justifyContent="flex-start"
+                alignItems="stretch"
+                spacing={4}
+            >
+                <Grid item xs={12} md={6}>
+                    <Typography variant="h5" sx={{ fontWeight: "bold" }}>Availability Settings</Typography>
+                    <Typography variant="subtitle1">Set your working date range and manage appointment slots</Typography>
 
-                <Typography variant="h5" sx={{ mt: 3, mb: 3 }}>Select Date Range</Typography>
+                    <Typography variant="h5" sx={{ mt: 3, mb: 3 }}>Select Date Range</Typography>
 
-                <Grid container spacing={2} sx={{ mt: 1 }}>
-                    <Grid item xs={6}>
-                        <TextField
-                            fullWidth
-                            type="date"
-                            label="From Date"
-                            InputLabelProps={{ shrink: true }}
-                            value={fromDate}
-                            onChange={(e) => setFromDate(e.target.value)}
-                            size="small"
-                        />
+                    <Grid container spacing={2} sx={{ mt: 1 }}>
+                        <Grid item xs={6}>
+                            <TextField
+                                fullWidth
+                                type="date"
+                                label="From Date"
+                                InputLabelProps={{ shrink: true }}
+                                value={fromDate}
+                                onChange={(e) => setFromDate(e.target.value)}
+                                size="small"
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <TextField
+                                fullWidth
+                                type="date"
+                                label="To Date"
+                                InputLabelProps={{ shrink: true }}
+                                value={toDate}
+                                onChange={(e) => setToDate(e.target.value)}
+                                size="small"
+                                disabled={!fromDate}
+                                inputProps={{ min: fromDate }}
+                            />
+                        </Grid>
                     </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                            fullWidth
-                            type="date"
-                            label="To Date"
-                            InputLabelProps={{ shrink: true }}
-                            value={toDate}
-                            onChange={(e) => setToDate(e.target.value)}
-                            size="small"
-                            disabled={!fromDate}
-                            inputProps={{ min: fromDate }}
-                        />
-                    </Grid>
+
+                    {dateRange.length > 0 && (
+                        <Grid container spacing={1} sx={{ mt: 2, width: "40%", gap: 1 }}>
+                            {dateRange.map(date => (
+                                <Grid item key={date}>
+                                    <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        onClick={() => handleRemoveDate(date)}
+                                    >
+                                        {date} &times;
+                                    </Button>
+                                </Grid>
+                            ))}
+                        </Grid>
+                    )}
+
+                    <Button
+                        variant="contained"
+                        color="success"
+                        sx={{ mt: 5, textTransform: "none" }}
+                        onClick={handleSaveAvailability}
+                    >
+                        Save Availability
+                    </Button>
                 </Grid>
 
-                {dateRange.length > 0 && (
-                    <Grid container spacing={1} sx={{ mt: 2, width: "40%", gap: 1}}>
-                        {dateRange.map(date => (
-                            <Grid item key={date}>
-                                <Button
-                                    variant="outlined"
-                                    color="primary"
-                                    onClick={() => handleRemoveDate(date)}
-                                >
-                                    {date} &times;
-                                </Button>
-                            </Grid>
-                        ))}
-                    </Grid>
-                )}
-
-                <Button
-                    variant="contained"
-                    color="success"
-                    sx={{ mt: 5, textTransform: "none" }}
-                    onClick={handleSaveAvailability}
-                >
-                    Save Availability
-                </Button>
+                <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
+                    <Typography variant="h5" sx={{ mt: 10, ml: 3 }}>
+                        Available Timeslots
+                    </Typography>
+                    <AvailabilitySlotManager
+                        slots={slots}
+                        setSlots={setSlots}
+                        selectedDate={fromDate}
+                        doctorId={doctorId}
+                    />
+                </Grid>
             </Grid>
-
-            <Grid item xs={12} md={6} sx={{ display: "flex", flexDirection: "column" }}>
-                <Typography variant="h5" sx={{ mt: 10, ml: 3 }}>
-                    Available Timeslots
-                </Typography>
-                <AvailabilitySlotManager
-                    slots={slots}
-                    setSlots={setSlots}
-                    selectedDate={fromDate}
-                    doctorId={doctorId}
-                />
-            </Grid>
-        </Grid>
+        </Box>
     );
 }

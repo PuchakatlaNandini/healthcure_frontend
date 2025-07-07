@@ -65,7 +65,7 @@ export default function DoctorLogin({ onClose }) {
         sx={{
           p: 4,
           textAlign: "center",
-          width: "30vw",
+         width: { xs: "90vw", sm: "80vw", md: "50vw", lg: "30vw" },
           border: "1px solid #ccc",
           borderRadius: 2,
           boxShadow: 3,

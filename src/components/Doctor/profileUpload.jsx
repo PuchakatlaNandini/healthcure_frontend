@@ -42,26 +42,23 @@ const ProfileUpload = ({ onCompleteSetup, onImageSelect }) => {
   };
 
   return (
-    <Box sx={{ maxWidth: 600, p: 4, boxShadow: 3, borderRadius: 2 }}>
-      <Typography variant="subtitle1" sx={{ mb: 0 }} fontWeight="bold" >
+    <Box sx={{ width: '90%', p: { xs: 2, sm: 3 }, boxShadow: 3, borderRadius: 2 }}>
+      <Typography variant="subtitle1" mb={2} fontWeight="bold" >
         Profile Picture
       </Typography>
 
-      {/* Main row box */}
       <Box
         sx={{
           display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'flex-start',
-          alignItems: 'flex-end',
+          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: { xs: 'center', sm: 'flex-start' },
           gap: 4,
-          flexWrap: 'nowrap'
+          flexWrap: 'wrap'
         }}
       >
-        {/* Upload Area */}
         <Box
           sx={{
-            width: 200,
+            width: { xs: '100%', sm: 200 },
             height: 200,
             border: '2px dashed #ccc',
             borderRadius: 2,
@@ -92,10 +89,12 @@ const ProfileUpload = ({ onCompleteSetup, onImageSelect }) => {
             onChange={handleFileChange}
           />
         </Box>
-
-        {/* Preview Area */}
         {preview && (
-          <Box sx={{ width: 200, ml: 10 }}>
+          <Box sx={{
+            width: { xs: '100%', sm: 200 },
+            mt: { xs: 2, sm: 0 },
+            textAlign: { xs: 'center', sm: 'left' }
+          }}>
             <Typography variant="caption" color="text.primary" mb={1} noWrap>
               Selected: {file?.name}
             </Typography>

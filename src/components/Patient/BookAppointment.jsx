@@ -118,8 +118,8 @@ const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
   };
 
   return (
-    <Box p={4} >
-      <Typography variant="h4" display="flex" justifyContent="flex-start" gutterBottom>
+    <Box p={{ xs: 2, sm: 4 }} >
+      <Typography variant="h4" display="flex" justifyContent="flex-start" gutterBottom fontSize={{ xs: "1.5rem", sm: "2rem" }}>
         Book Appointment
       </Typography>
 
@@ -135,10 +135,10 @@ const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
         <CloseIcon />
       </IconButton>
 
-      <Grid container spacing={4} direction="row" alignContent="flex-start" justifyContent="flex-start">
+      <Grid container spacing={4} direction={{ xs: "column", md: "row" }} alignContent="flex-start" justifyContent="flex-start" alignItems={"stretch"}>
         {/* Doctor Info */}
         <Grid item xs={12} md={6} textAlign="center">
-          <Paper elevation={3} sx={{ p: 3 }}>
+          <Paper elevation={3} sx={{ p: { xs: 2, sm: 3 }, height: "100%" }}>
             <Stack spacing={1} alignItems="center">
               <Avatar
                 src={doctor?.image || "https://via.placeholder.com/150"}
@@ -153,7 +153,7 @@ const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
                     ? doctor.degrees.split(',').map(d => d.trim())
                     : []
                 ).map((deg, idx) => (
-                  <Typography key={idx} variant="caption" sx={{ border: "1px solid #ccc", borderRadius: 1, px: 1 }}>{deg}</Typography>
+                  <Typography key={idx} variant="caption" sx={{ border: "1px solid #ccc", borderRadius: 1, px: 1, mb: 1 }}>{deg}</Typography>
                 ))}
               </Stack>
               <Typography><FaUserMd /> {doctor?.experience} years experience</Typography>
@@ -166,15 +166,15 @@ const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
 
         {/* Booking Form */}
         <Grid item xs={12} md={6} textAlign="center" maxWidth={"60%"}>
-          <Paper elevation={3} sx={{ p: 3 }}>
+          <Paper elevation={3} sx={{ p: { xs: 2, sm: 3 } }}>
             <Typography variant="h6" gutterBottom>Book Your Appointment</Typography>
             <Typography variant="body2" mb={2}>Choose date, time and consultation type</Typography>
 
-            <Stack direction="row" spacing={2} mb={2} justifyContent="center">
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={2} mb={2} justifyContent="center">
               {["In-Person", "Online"].map((type) => (
                 <Button
                   key={type}
-                  sx={{ minWidth: 200, height: 30 }}
+                  sx={{ minWidth: 160, }}
                   variant={consultationType === type ? "contained" : "outlined"}
                   color={type === "In-Person" ? "secondary" : "primary"}
                   onClick={() => {
@@ -199,37 +199,41 @@ const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
                 disablePast
                 slotProps={{
                   textField: {
-                    fullWidth: false,
+                    minWidth: "50%",
                     size: "small",
-                    sx: {
-                      width: "200px",
-                      fontSize: "14px",
-                    },
+
                   },
                 }}
               />
-
-
             </Box>
 
             {selectedDate && availableSlots.length > 0 && (
               <Box>
                 <Typography variant="subtitle1" gutterBottom>Select Time Slot:</Typography>
-                <Stack direction="row" spacing={1} sx={{ display: "flex", flexWrap: "wrap", gap: 1, justifyContent: "flex-start", }}>
+                <Stack direction="row" useFlexGap spacing={1} sx={{ display: "flex", flexWrap: "wrap", gap: 1, justifyContent: "flex-start", }}>
                   {availableSlots.map((slot) => {
+                    const selectedDateStr = dayjs(selectedDate).format("YYYY-MM-DD");
+                    const [startTimeStr] = slot.split("-");
+                    const slotDateTime = dayjs(`${selectedDateStr} ${startTimeStr.trim()}`, "YYYY-MM-DD HH:mm");
+                    const now = dayjs();
+
                     const isBooked = bookedSlots.includes(slot);
+                    const isPastSlot = selectedDateStr === now.format("YYYY-MM-DD") && slotDateTime.isBefore(now);
+                    const disabled = isBooked || isPastSlot;
                     return (
                       <Button
 
                         key={slot}
                         variant={selectedSlot === slot ? "contained" : "outlined"}
                         onClick={() => !isBooked && setSelectedSlot(slot)}
-                        disabled={isBooked}
+                        disabled={disabled}
                         color={isBooked ? "inherit" : selectedSlot === slot ? "success" : "primary"}
-                        sx={{borderColor: isBooked ? '#f44336' : undefined,color: isBooked ? '#f44336' : undefined,
-                         '&.Mui-disabled': { borderColor: '#f44336',color: '#f44336',
-                           },
-                          }}
+                        sx={{
+                          borderColor: isBooked ? '#f44336' : undefined, color: isBooked ? '#f44336' : undefined,
+                          '&.Mui-disabled': {
+                            borderColor: '#f44336', color: '#f44336',
+                          },
+                        }}
                       >
                         {slot}
                       </Button>

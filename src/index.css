@@ -1,6 +1,12 @@
-/* horizontal scroll on the whole app */
+
 body, #root, html {
-  overflow-x: hidden !important;
+  overflow-x: hidden;
   width: 100vw;
   box-sizing: border-box;
+  margin:0;
+  padding:0
 }
+
+/* * {
+  outline: 1px solid red;
+} */
