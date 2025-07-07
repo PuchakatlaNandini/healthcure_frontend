@@ -125,32 +125,6 @@ const PatientDashboard = () => {
     }
   };
 
-  //   const handleCancel = async (appointmentId) => {
-  //   try {
-  //     const res = await axiosInstance.patch(`/appointments/status/${appointmentId}`, {
-  //       status: "cancelled",
-  //     });
-
-  //     const updated = res.data.appointment;
-  //     const updatedList = appointments.map((a) =>
-  //       a._id === appointmentId ? updated : a
-  //     );
-
-  //     setAppointments(updatedList);
-
-  //     // Ensure this state is defined
-  //     setCancelledAppointments(prev => [...prev, appointmentId]);
-
-  //     toast.success("Appointment cancelled and confirmation email sent.");
-  //   } catch (error) {
-  //     console.error("Cancel error:", error?.response?.data || error.message);
-  //     toast.error(`Failed to cancel appointment: ${error?.response?.data?.message || error.message}`);
-  //   }
-  // };
-
-  
-
-
   const handleReschedule = (appt) => {
     if (!user) {
       alert("User not loaded. Please login again.");
@@ -194,9 +168,7 @@ const PatientDashboard = () => {
 
 
   return (
-    <Box sx={{ pt: 10, px:{xs:2,sm:3,md:4} }}>
-
-      {/* Header */}
+    <Box sx={{ pt: 10, px: { xs: 2, sm: 3, md: 4 } }}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -223,45 +195,40 @@ const PatientDashboard = () => {
           </Button>
         </Box>
       </Box>
-
-      {/* Tab Bar */}
       <Stack
-  direction={{ xs: "column", sm: "row" }}
-  spacing={2}
-  justifyContent="flex-start"
-  alignItems="stretch"
-  my={2}
-  sx={{ maxWidth: "100%" }}
->
-  <Button
-    fullWidth
-    sx={{
-      maxWidth: { xs: "100%", sm: 300, md: 350 },
-      textTransform: "none",
-      flex: 1,
-    }}
-    variant={activeTab === "find" ? "contained" : "outlined"}
-    onClick={() => setActiveTab("find")}
-  >
-    Find Doctors
-  </Button>
+        direction={{ xs: "column", sm: "row" }}
+        spacing={2}
+        justifyContent="flex-start"
+        alignItems="stretch"
+        my={2}
+        sx={{ maxWidth: "100%" }}
+      >
+        <Button
+          fullWidth
+          sx={{
+            maxWidth: { xs: "100%", sm: 300, md: 350 },
+            textTransform: "none",
+            flex: 1,
+          }}
+          variant={activeTab === "find" ? "contained" : "outlined"}
+          onClick={() => setActiveTab("find")}
+        >
+          Find Doctors
+        </Button>
 
-  <Button
-    fullWidth
-    sx={{
-      maxWidth: { xs: "100%", sm: 300, md: 350 },
-      textTransform: "none",
-      flex: 1,
-    }}
-    variant={activeTab === "appointments" ? "contained" : "outlined"}
-    onClick={() => setActiveTab("appointments")}
-  >
-    My Appointments
-  </Button>
-</Stack>
-
-
-      {/* Content */}
+        <Button
+          fullWidth
+          sx={{
+            maxWidth: { xs: "100%", sm: 300, md: 350 },
+            textTransform: "none",
+            flex: 1,
+          }}
+          variant={activeTab === "appointments" ? "contained" : "outlined"}
+          onClick={() => setActiveTab("appointments")}
+        >
+          My Appointments
+        </Button>
+      </Stack>
       {activeTab === "find" && (
         <Box my={4}>
           <Typography variant="h5" gutterBottom>🔍 Find Your Doctor</Typography>
@@ -273,7 +240,7 @@ const PatientDashboard = () => {
             <TextField
               label="Search doctors by name"
               variant="outlined"
-             fullWidth
+              fullWidth
               size="small"
               value={searchTerm}
               onChange={handleSearchChange}
@@ -283,7 +250,7 @@ const PatientDashboard = () => {
               label="Specialization"
               value={selectedSpecialization}
               onChange={handleSpecializationChange}
-             fullWidth
+              fullWidth
               size="small"
             >
               <MenuItem value="All Specializations">All Specializations</MenuItem>
@@ -292,8 +259,8 @@ const PatientDashboard = () => {
               <MenuItem value="Dentist">Dentist</MenuItem>
               <MenuItem value="Neurology">Neurologist</MenuItem>
               <MenuItem value="Pediatrics">Pediatrics</MenuItem>
-                <MenuItem value="Psychiatry">Psychiatry</MenuItem>
-               <MenuItem value="General Physician">General Physician</MenuItem>
+              <MenuItem value="Psychiatry">Psychiatry</MenuItem>
+              <MenuItem value="General Physician">General Physician</MenuItem>
 
             </TextField>
           </Stack>
@@ -301,8 +268,8 @@ const PatientDashboard = () => {
           <Grid container spacing={3} display={'flex'} justifyContent="flex-start" alignItems="flex-start">
 
             {filteredDoctors.map((doc) => (
-              <Grid item xs={12} sm={6} md={4 } lg={3} key={doc._id}  >
-                <Card sx={{ mb: 3,  boxShadow: 3, borderRadius: 2, display: "flex", flexDirection: "column",border:'1px solid blue' }}>
+              <Grid item xs={12} sm={6} md={4} lg={3} key={doc._id}  >
+                <Card sx={{ height: '100%', mb: 3, boxShadow: 3, borderRadius: 2, display: "flex", flexDirection: "column", border: '1px solid blue' }}>
                   <CardContent sx={{ display: "flex", alignItems: "center" }}>
                     {doc.hasImage ? (
                       <img
@@ -313,13 +280,15 @@ const PatientDashboard = () => {
                           height: 80,
                           borderRadius: "50%",
                           marginRight: 16,
+                          objectFit: "cover",
+                          flexShrink: 0,
                         }}
                       />
                     ) : (
                       <Box
                         sx={{
-                          width: 100,
-                          height: 100,
+                          width: 80,
+                          height: 80,
                           borderRadius: "50%",
                           marginRight: 2,
                           backgroundColor: "#ccc",
@@ -328,6 +297,7 @@ const PatientDashboard = () => {
                           justifyContent: "center",
                           fontSize: 24,
                           fontWeight: "bold",
+                          flexShrink: 0
                         }}
                       > {(doc.name && typeof doc.name === "string" && doc.name.trim().length > 0)
                         ? doc.name.trim()[0].toUpperCase()
@@ -386,10 +356,10 @@ const PatientDashboard = () => {
               </Grid>
             ) : (
               [...appointments]
-                .sort((a, b) => new Date(b.scheduledAt) - new Date(a.scheduledAt)) 
+                .sort((a, b) => new Date(b.scheduledAt) - new Date(a.scheduledAt))
                 .map((appt) => (
                   <Grid item xs={12} sm={6} md={4} lg={3} key={appt._id} >
-                    <Card sx={{ width: "100%", minWidth: "260px", maxWidth: "100%", boxShadow: 3, borderRadius: 2,border:'1px solid blue' }}>
+                    <Card sx={{ width: "100%", minWidth: "260px", maxWidth: "100%", boxShadow: 3, borderRadius: 2, border: '1px solid blue' }}>
                       <CardContent>
                         <Typography variant="h6" gutterBottom>
                           Doctor: {appt.doctorId?.name || "Unknown"}
@@ -437,7 +407,6 @@ const PatientDashboard = () => {
         </Box>
       )}
 
-      {/* modal for booking/rescheduling appointment */}
       <Dialog open={!!openBooking} onClose={() => setOpenBooking(null)} maxWidth="md" fullWidth>
         <BookAppointment
           doctor={selectedDoctor}
@@ -452,7 +421,7 @@ const PatientDashboard = () => {
         />
       </Dialog>
       <Dialog open={cancelReasonDialogOpen} onClose={() => setCancelReasonDialogOpen(false)}>
-        <Box p={3}  sx={{ width: { xs: '90vw', sm: 400 } }}>
+        <Box p={3} sx={{ width: { xs: '90vw', sm: 400 } }}>
           <Typography variant="h6" gutterBottom>Reason for Cancellation</Typography>
           <TextField
             fullWidth

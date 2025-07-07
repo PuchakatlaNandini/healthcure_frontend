@@ -21,7 +21,7 @@ export default function DoctorDashboard() {
       const doctorIdAlt = localStorage.getItem("doctor_id");
       console.log('DoctorDashboard: doctorId from localStorage =', doctorIdLS, 'doctor_id =', doctorIdAlt);
 
-      // Get doctorId from localStorage or user context
+      // to get doctorId from localStorage 
       const doctorId = doctorIdLS || doctorIdAlt || null;
       if (!doctorId) {
         alert("Doctor ID not found. Please log in again.");
@@ -78,25 +78,21 @@ export default function DoctorDashboard() {
         {/* Tab Buttons with spacing */}
         <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mb: 2, mt: 3, ml: { xs: 1, sm: 3 }, flexWrap: 'wrap', justifyContent: { xs: 'flex-start', sm: 'flex-start' }, gap: 2 }}>
           <Button
-            sx={{ minWidth: 150, textTransform: "none", mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 },  py: 1,
-              px: 2, }}
+            sx={{
+              minWidth: 150, textTransform: "none", mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 }, py: 1,
+              px: 2,
+            }}
             variant={tab === "appointments" ? "contained" : "outlined"}
             onClick={() => setTab("appointments")}
           >
             Appointments
           </Button>
 
-          {/* <Button
-            sx={{ minWidth: 120, textTransform: "none", mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 } }}
-            variant={tab === "profile" ? "contained" : "outlined"}
-            onClick={() => setTab("profile")}
-          >
-            Profile
-          </Button> */}
-
           <Button
-            sx={{ minWidth: 150, textTransform: "none", mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 },  py: 1,
-              px: 2, }}
+            sx={{
+              minWidth: 150, textTransform: "none", mb: { xs: 1, sm: 0 }, mx: 1, fontSize: { xs: 12, sm: 14 }, py: 1,
+              px: 2,
+            }}
             variant={tab === "availability" ? "contained" : "outlined"}
             onClick={() => setTab("availability")}
           >
