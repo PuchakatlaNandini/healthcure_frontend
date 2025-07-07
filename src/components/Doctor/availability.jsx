@@ -9,14 +9,9 @@ import {
 } from "@mui/material";
 
 import AvailabilitySlotManager from "./availabilitySlots";
-<<<<<<< HEAD:src/components/Doctor/availability.jsx
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+
 import dayjs from 'dayjs';
-import axios from '../../utils/axios'
-=======
-import dayjs from "dayjs";
-import axios from "../utils/axios";
->>>>>>> ec4884e3b38cce34c11ebc42cbb582945a950d33:src/components/availability.jsx
+import axios from "../../utils/axios";
 import { toast } from "react-toastify";
 
 export default function Availability({ onSaveSettings }) {

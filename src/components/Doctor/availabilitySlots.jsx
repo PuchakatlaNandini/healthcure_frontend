@@ -63,7 +63,16 @@ export default function AvailabilitySlotManager({
       toast.error("Start and End Time are required.");
       return;
     }
+    
+    const now = new Date();
+  const selectedStart = new Date();
+  const [startHour, startMinute] = startTime.split(":").map(Number);
+  selectedStart.setHours(startHour, startMinute, 0, 0);
 
+  if (selectedStart <= now) {
+    toast.error("You cannot add a time slot in the past.");
+    return;
+  }
     const start = new Date(`1970-01-01T${startTime}:00`);
     const end = new Date(`1970-01-01T${endTime}:00`);
     const diffMinutes = (end - start) / (1000 * 60);

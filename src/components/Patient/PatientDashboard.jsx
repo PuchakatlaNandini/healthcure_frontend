@@ -16,7 +16,6 @@ import {
   TextField,
   MenuItem,
   Grid,
-
 } from "@mui/material";
 import LogoutIcon from '@mui/icons-material/Logout';
 import Dialog from "@mui/material/Dialog";
@@ -40,9 +39,6 @@ const PatientDashboard = () => {
   const [cancelReasonDialogOpen, setCancelReasonDialogOpen] = useState(false);
   const [cancelReason, setCancelReason] = useState("");
   const [appointmentToCancel, setAppointmentToCancel] = useState(null);
-
-
-
 
   // Set active tab to appointments if coming from booking
   useEffect(() => {
@@ -125,32 +121,6 @@ const PatientDashboard = () => {
     }
   };
 
-  //   const handleCancel = async (appointmentId) => {
-  //   try {
-  //     const res = await axiosInstance.patch(`/appointments/status/${appointmentId}`, {
-  //       status: "cancelled",
-  //     });
-
-  //     const updated = res.data.appointment;
-  //     const updatedList = appointments.map((a) =>
-  //       a._id === appointmentId ? updated : a
-  //     );
-
-  //     setAppointments(updatedList);
-
-  //     // Ensure this state is defined
-  //     setCancelledAppointments(prev => [...prev, appointmentId]);
-
-  //     toast.success("Appointment cancelled and confirmation email sent.");
-  //   } catch (error) {
-  //     console.error("Cancel error:", error?.response?.data || error.message);
-  //     toast.error(`Failed to cancel appointment: ${error?.response?.data?.message || error.message}`);
-  //   }
-  // };
-
-  
-
-
   const handleReschedule = (appt) => {
     if (!user) {
       alert("User not loaded. Please login again.");
@@ -191,12 +161,17 @@ const PatientDashboard = () => {
       toast.error("Failed to cancel appointment.");
     }
   };
+ 
+  const isWithinOneHour = (scheduledAt) => {
+  const now = new Date();
+  const appointmentTime = new Date(scheduledAt);
+  const diffInMinutes = (appointmentTime - now) / (1000 * 60);
+  return diffInMinutes < 60; 
+};
 
 
   return (
     <Box sx={{ pt: 10, px: 4, }}>
-
-      {/* Header */}
       <Box
         display="flex"
         justifyContent="space-between"
@@ -224,7 +199,6 @@ const PatientDashboard = () => {
         </Box>
       </Box>
 
-      {/* Tab Bar */}
       <Stack direction="row" spacing={2} justifyContent="flex-start" my={2} >
         <Button sx={{ minWidth: 640, textTransform: "none" }}
           variant={activeTab === "find" ? "contained" : "outlined"}
@@ -239,8 +213,6 @@ const PatientDashboard = () => {
           My Appointments
         </Button>
       </Stack>
-
-      {/* Content */}
       {activeTab === "find" && (
         <Box my={4}>
           <Typography variant="h5" gutterBottom>🔍 Find Your Doctor</Typography>
@@ -384,7 +356,7 @@ const PatientDashboard = () => {
                         </Typography>
                         <Divider sx={{ my: 1 }} />
                         <Stack direction="row" spacing={2}>
-                          <Button
+                          {/* <Button
                             variant="contained"
                             color="error"
                             onClick={() => {
@@ -396,7 +368,23 @@ const PatientDashboard = () => {
                             sx={{ textTransform: "none" }}
                           >
                             Cancel
+                          </Button> */}
+                          <Button
+                          variant="contained"
+                          color="error"
+                          onClick={() => {
+                           setAppointmentToCancel(appt._id);
+                           setCancelReason("");
+                           setCancelReasonDialogOpen(true);
+                           }}
+                          disabled={
+                           appt.status === "cancelled" || isWithinOneHour(appt.scheduledAt)
+                            }
+                           sx={{ textTransform: "none" }}
+                           >
+                           Cancel
                           </Button>
+
 
                           <Button
                             variant="contained"
@@ -416,7 +404,7 @@ const PatientDashboard = () => {
         </Box>
       )}
 
-      {/* modal for booking/rescheduling appointment */}
+  
       <Dialog open={!!openBooking} onClose={() => setOpenBooking(null)} maxWidth="md" fullWidth>
         <BookAppointment
           doctor={selectedDoctor}
