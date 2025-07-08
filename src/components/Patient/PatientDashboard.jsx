@@ -378,7 +378,7 @@ const PatientDashboard = () => {
                         </Typography>
                         <Divider sx={{ my: 1 }} />
                         <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                          <Button
+                          {/* <Button
                             variant="contained"
                             color="error"
                             onClick={() => {
@@ -390,7 +390,7 @@ const PatientDashboard = () => {
                             sx={{ textTransform: "none" }}
                           >
                             Cancel
-                          </Button> 
+                          </Button>  */}
                           <Button
                           variant="contained"
                           color="error"

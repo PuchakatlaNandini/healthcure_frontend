@@ -171,7 +171,7 @@ const AppointmentList = ({ appointments: propAppointments, setAppointments }) =>
                       setSelectedAppointmentId(appt._id);
                       setCancelDialogOpen(true);
                     }}
-                    disabled={appt.status === "cancelled"}
+                    disabled={appt.status === "cancelled" ||  new Date(appt.scheduledAt) <= new Date()}
                   >
                     Cancel
                   </Button>
