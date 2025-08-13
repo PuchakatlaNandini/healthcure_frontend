@@ -49,7 +49,7 @@ const AppointmentList = ({ appointments: propAppointments, setAppointments }) =>
 
   const updateStatus = async (appointmentId, newStatus) => {
     try {
-      const res = await axios.patch(`/appointments/${appointmentId}/cancel-by-doctor`, {
+      const res = await axiosInstance.patch(`/appointments/${appointmentId}/cancel-by-doctor`, {
         status: newStatus,
       });
 

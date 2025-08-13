@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import DeleteIcon from "@mui/icons-material/Delete";
-import axios from "../../utils/axios";
+import axiosInstance from "../../utils/axios";
 import { toast } from "react-toastify";
 
 export default function AvailabilitySlotManager({
@@ -30,7 +30,7 @@ export default function AvailabilitySlotManager({
     const fetchBookedSlots = async () => {
       if (!selectedDate || !doctorId) return;
       try {
-        const res = await axios.get(`/appointments/booked-slots`, {
+        const res = await axiosInstance.get(`/appointments/booked-slots`, {
           params: {
             date: selectedDate,
             doctorId,
@@ -127,7 +127,7 @@ export default function AvailabilitySlotManager({
       const formattedSlots = slots
         .filter((slot) => slot.start && slot.end)
         .map((slot) => `${slot.start}-${slot.end}`);
-      await axios.put("/doctors/availability", { timeSlots: formattedSlots });
+      await axiosInstance.put("/doctors/availability", { timeSlots: formattedSlots });
       toast.success("Time slots saved!");
     } catch (err) {
       toast.error("Error saving time slots");

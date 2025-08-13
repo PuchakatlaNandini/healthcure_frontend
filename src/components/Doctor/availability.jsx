@@ -11,7 +11,7 @@ import {
 
 import AvailabilitySlotManager from "./availabilitySlots";
 import dayjs from "dayjs";
-import axios from "../../utils/axios"
+import axiosInstance from "../../utils/axios";
 import { toast } from "react-toastify";
 
 export default function Availability({ onSaveSettings }) {
@@ -26,7 +26,7 @@ export default function Availability({ onSaveSettings }) {
     useEffect(() => {
         const fetchAvailability = async () => {
             try {
-                const response = await axios.get(`/doctors/availability/${doctorId}`);
+                const response = await axiosInstance.get(`/doctors/availability/${doctorId}`);
                 const { availability, timeSlots } = response.data;
 
                 if (availability?.length > 0) {
@@ -76,7 +76,7 @@ export default function Availability({ onSaveSettings }) {
         setDateRange(generatedDates);
 
         try {
-            await axios.put("/doctors/availability", {
+            await axiosInstance.put("/doctors/availability", {
                 doctorId,
                 dates: generatedDates,
                 timeSlots: slots.map(s => `${s.start}-${s.end}`)

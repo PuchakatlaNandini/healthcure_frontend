@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
 import {
   Box,
   Typography,
@@ -22,6 +21,7 @@ import dayjs from "dayjs";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
+import axiosInstance from "../../utils/axios";
 
 const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
   const navigate = useNavigate();
@@ -47,7 +47,7 @@ const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
 
   useEffect(() => {
     if (!doctor?._id) return;
-    axios.get(`http://localhost:5000/api/doctors/availability/${doctor._id}`)
+    axiosInstance.get(`/doctors/availability/${doctor._id}`)
       .then(res => {
         setAvailability(res.data.availability || []);
         setTimeSlots(res.data.timeSlots || []);
@@ -67,7 +67,7 @@ const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
           return;
         }
 
-        const res = await axios.get("http://localhost:5000/api/appointments/booked-slots", {
+        const res = await axiosInstance.get("/appointments/booked-slots", {
           params: { doctorId: doctor._id, date: formattedDate },
         });
 
@@ -105,7 +105,7 @@ const BookAppointment = ({ doctor, user, onClose, onSuccess, reschedule }) => {
 
     try {
       setLoading(true);
-      await axios.post("http://localhost:5000/api/appointments/book", payload);
+      await axiosInstance.post("/appointments/book", payload);
       setSuccess(true);
       setBookedSlots(prev => [...prev, selectedSlot]);
       toast.success("Appointment booked successfully!");

@@ -31,7 +31,7 @@ export default function DoctorDashboard() {
         const res = await axiosInstance.get(`/appointments/doctor/today/${doctorId}`);
         console.log('DoctorDashboard: fetched appointments from API:', res.data);
         setAppointments(res.data);
-        const profileRes = await axiosInstance.get(`/api/doctors/${doctorId}`);
+        const profileRes = await axiosInstance.get(`/doctors/${doctorId}`);
         const name = profileRes.data?.name;
         if (name) {
           localStorage.setItem("doctorName", name);

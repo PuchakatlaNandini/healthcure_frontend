@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, TextField, Button, Typography, Grid } from "@mui/material";
-import axios from "axios";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import { toast } from "react-toastify";
-
+import axiosInstance from "../../utils/axios";
 
 export default function DoctorLogin({ onClose }) {
   const [email, setEmail] = useState("");
@@ -19,7 +18,7 @@ export default function DoctorLogin({ onClose }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/api/doctors/login", {
+      const response = await axiosInstance.post("/doctors/login", {
         email,
         password,
       });

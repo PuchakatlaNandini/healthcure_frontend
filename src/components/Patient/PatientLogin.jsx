@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import axiosInstance from '../../utils/axios';
 
 const PatientLogin = ({ onClose }) => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -28,14 +29,15 @@ const PatientLogin = ({ onClose }) => {
     e.preventDefault();
     setError('');
     try {
-      const response = await fetch('http://localhost:5000/api/users/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
+      // const response = await fetch('http://localhost:5000/api/users/login', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(formData),
+      // });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || 'Login failed');
+      // const data = await response.json();
+      // if (!response.ok) throw new Error(data.message || 'Login failed');
+      const { data } = await axiosInstance.post('/users/login', formData);
 
       localStorage.setItem('currentUser', JSON.stringify(data.user));
       localStorage.setItem('token', data.token);

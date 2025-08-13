@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import axiosInstance from '../../utils/axios';
 
 const PatientRegister = ({ onClose }) => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
@@ -28,7 +29,7 @@ const PatientRegister = ({ onClose }) => {
     e.preventDefault();
     setError('');
     try {
-      const response = await fetch('http://localhost:5000/api/users/register', {
+      const response = await axiosInstance.post('/users/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

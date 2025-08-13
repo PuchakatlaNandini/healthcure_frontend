@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
 import logo from "../../assets/images/image.png";
 import axiosInstance from "../../utils/axios";
 import {
@@ -58,8 +57,8 @@ const PatientDashboard = () => {
   }, []);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/doctors")
+    axiosInstance
+      .get("/doctors")
       .then((response) => {
         setDoctors(response.data);
         setFilteredDoctors(response.data);
@@ -129,7 +128,7 @@ const PatientDashboard = () => {
 
     const doctor = {
       ...appt.doctorId,
-      image: `http://localhost:5000/api/doctor/${appt.doctorId._id}/image`,
+      image: `${axiosInstance.defaults.baseURL}/doctor/${appt.doctorId._id}/image`,
     };
 
     setSelectedDoctor(doctor);
@@ -276,7 +275,7 @@ const PatientDashboard = () => {
                   <CardContent sx={{ display: "flex", alignItems: "center" }}>
                     {doc.hasImage ? (
                       <img
-                        src={`http://localhost:5000/api/doctor/${doc._id}/image`}
+                        src={`${axiosInstance.defaults.baseURL}/doctor/${doc._id}/image`}
                         alt={doc.name}
                         style={{
                           width: 80,
@@ -325,7 +324,7 @@ const PatientDashboard = () => {
 
                           setSelectedDoctor({
                             ...doc,
-                            image: `http://localhost:5000/api/doctor/${doc._id}/image`,
+                            image: `${axiosInstance.defaults.baseURL}/doctor/${doc._id}/image`,
                           });
 
                           setOpenBooking({ reschedule: false });

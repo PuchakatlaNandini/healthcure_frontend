@@ -21,7 +21,7 @@ import {
 } from "@mui/icons-material";
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ProfileUpload from "./profileUpload";
-import axios from "axios";
+import axiosInstance from "../../utils/axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Visibility from "@mui/icons-material/Visibility";
@@ -110,7 +110,7 @@ export default function DoctorProfile() {
         }
 
         try {
-            await axios.post("http://localhost:5000/api/doctors/profile", formDataToSend, {
+            await axiosInstance.post("/doctors/profile", formDataToSend, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "multipart/form-data"
@@ -156,7 +156,7 @@ export default function DoctorProfile() {
             if (!doctorId || !token) return;
 
             try {
-                const response = await axios.get(`http://localhost:5000/api/doctors/${doctorId}`, {
+                const response = await axiosInstance.get(`/doctors/${doctorId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

@@ -11,8 +11,9 @@ import {
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import axios from "axios";
+
 import { toast } from "react-toastify";
+import axiosInstance from "../../utils/axios";
 
 export default function DoctorRegister() {
   const [form, setForm] = useState({
@@ -36,7 +37,7 @@ export default function DoctorRegister() {
     }
 
     try {
-      await axios.post("http://localhost:5000/api/doctors/register", form);
+      await axiosInstance.post("/doctors/register", form);
       toast.success("Registration successful! Please login.");
       navigate("/doctor-login");
     } catch (error) {
